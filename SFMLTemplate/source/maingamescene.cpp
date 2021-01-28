@@ -47,7 +47,7 @@ void MainGameScene::onInitializeScene()
 	m_playerShip->getPhysicsBody()->setType(gbh::PhysicsBodyType::Dynamic);
 
 	//damping and rotation for some reason not working in this version, and with these calls
-	m_playerShip->getPhysicsBody()->setLinearDamping(1.0f);
+	m_playerShip->getPhysicsBody()->setLinearDamping(3.0f);
 	m_playerShip->getPhysicsBody()->setFixedRotation(true);
 
 	addChild(m_playerShip);
