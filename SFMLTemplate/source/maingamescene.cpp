@@ -30,6 +30,8 @@ void MainGameScene::onInitializeScene()
 	//create and add the background
 	std::shared_ptr<gbh::SpriteNode> m_background = std::make_shared<gbh::SpriteNode>(kMainGameBackground);
 	m_background->setName("Background");
+	m_background->setOrigin(0.5f, 0.5f);
+	m_background->setPosition(640, 300);
 	addChild(m_background);
 
 	//create spaceship graphics
@@ -74,7 +76,7 @@ void MainGameScene::captureInput()
 	{		
 		moveForce.x += 1.0;
 	}
-	sf::Vector2f movement = moveForce * accelration;
-	movement = gbh::math::normalize(movement);
+	moveForce = gbh::math::normalize(moveForce);
+	player->getPhysicsBody()->applyForceToCenter(moveForce*accelration);
 	
 }

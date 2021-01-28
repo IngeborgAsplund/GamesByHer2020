@@ -11,7 +11,7 @@ protected:
 private:
 	sf::Font m_robotoFont;
 	//physics related variables
-	float accelration = 2000.0f;
+	float accelration = 1000.0f;
 	sf::Vector2f moveForce = sf::Vector2f(0.0f, 0.0f);
 	//functions
 
