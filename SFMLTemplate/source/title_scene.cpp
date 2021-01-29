@@ -12,6 +12,7 @@ const std::string kTitleScreenFont = "../assets/fonts/roboto-regular.ttf";
 const std::string kTitleScreenBackground = "../assets/gfx/starfield-01.png";
 const std::string kPlayerShip = "../assets/gfx/player-ship.png";
 const std::string kStartButton = "../assets/gfx/Startbutton.png";
+const std::string kCreditsButton = "../assets/gfx/credits_button.png";
 const std::string kTitleImage = "../assets/gfx/SpaceraceLogo.png";
 const std::string krotatingAsteroid = "../assets/gfx/asteroid-medium-01.png";
 
@@ -49,7 +50,12 @@ void TitleScene::onInitializeScene()
     startButton->setOrigin(0.5f, 0.5f);
 	startButton->setName("StartButton");
 	addChild(startButton);
-	
+
+	std::shared_ptr<gbh::SpriteNode>creditsButton = std::make_shared<gbh::SpriteNode>(kCreditsButton);
+	creditsButton->setPosition(640, 460);
+	creditsButton->setOrigin(0.5f, 0.5f);
+	creditsButton->setName("Credits");
+	addChild(creditsButton);
 	
 }
 
@@ -74,12 +80,17 @@ void TitleScene::onMouseEvent(sf::Event& event)
 
 		if (node)
 		{
-			/*std::cout << "Clicked On: " << node->getName() << "\n";*/
+			//check if the node we clicked on is the startbutton and in that case start the main game.
 			if(node->getName()=="StartButton")
 			{
 				gbh::Game::getInstance().changeScene("maingame");
 			}
+			if (node->getName() == "Credits")
+			{
+				gbh::Game::getInstance().changeScene("credits");
+			}
 		}
+		
 	}
 }
 

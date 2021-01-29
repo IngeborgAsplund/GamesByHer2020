@@ -10,14 +10,20 @@
 #include"sfml-engine/mathutils.h"
 
 //definition of used assets
+const std::string kMainMusic = "../assets/music/titlescreen.ogg";
 const std::string kMainGameFont = "../assets/fonts/roboto-regular.ttf";
 const std::string kMainGameBackground = "../assets/gfx/starfield-01.png";
+const std::string kBigAsteroid = "../assets/gfx/asteroid-large-01.png";
+const std::string kMediumAsteroid01 = "../assets/gfx/asteroid-medium-01.png";
+const std::string kMediumAsteroid02 = "../assets/gfx/asteroid-medium-02.png";
+const std::string kMediumAsteroid03 = "../assets/gfx/asteroid-medium-03.png";
 const std::string KPlayerShip = "../assets/gfx/player-ship.png";
 //On initialize scene method.
 void MainGameScene::onInitializeScene()
 {
 	//load the font we want to use
 	m_robotoFont.loadFromFile(kMainGameFont);
+	m_mainMusic.openFromFile(kMainMusic);
 
 	//create the physics world
 	Scene::createPhysicsWorld(sf::Vector2f(0.0f,0.0f));
@@ -33,6 +39,8 @@ void MainGameScene::onInitializeScene()
 	m_background->setOrigin(0.5f, 0.5f);
 	m_background->setPosition(640, 300);
 	addChild(m_background);
+	//create and add some obstacles for the player to avoid
+
 
 	//create spaceship graphics
 	std::shared_ptr<gbh::SpriteNode>m_playerShip = std::make_shared<gbh::SpriteNode>(KPlayerShip);
@@ -41,12 +49,10 @@ void MainGameScene::onInitializeScene()
 	m_playerShip->setPosition(620, 500);
 	m_playerShip->setScale(0.5, 0.5);
 
-	sf::Vector2f shipsize = sf::Vector2f(55.0f, 102.0f);
 	//Physics for player ship added
+	sf::Vector2f shipsize = sf::Vector2f(55.0f, 102.0f);
 	m_playerShip->setPhysicsBody(getPhysicsWorld()->createBox(shipsize*0.5f));
 	m_playerShip->getPhysicsBody()->setType(gbh::PhysicsBodyType::Dynamic);
-
-	//damping and rotation for some reason not working in this version, and with these calls
 	m_playerShip->getPhysicsBody()->setLinearDamping(3.0f);
 	m_playerShip->getPhysicsBody()->setFixedRotation(true);
 
@@ -55,6 +61,16 @@ void MainGameScene::onInitializeScene()
 void MainGameScene:: onUpdate(double deltaTime)
 {
 	captureInput();
+}
+void MainGameScene::onShowScene()
+{
+	m_mainMusic.play();
+	setDrawPhysicsDebug(true);
+}
+void MainGameScene::onHideScene()
+{
+	m_mainMusic.stop();
+	setDrawPhysicsDebug(false);
 }
 void MainGameScene::captureInput() 
 {
