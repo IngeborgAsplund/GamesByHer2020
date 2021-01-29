@@ -13,10 +13,14 @@
 const std::string kMainMusic = "../assets/music/titlescreen.ogg";
 const std::string kMainGameFont = "../assets/fonts/roboto-regular.ttf";
 const std::string kMainGameBackground = "../assets/gfx/starfield-01.png";
+//Asteroids/obstacles
 const std::string kBigAsteroid = "../assets/gfx/asteroid-large-01.png";
 const std::string kMediumAsteroid01 = "../assets/gfx/asteroid-medium-01.png";
 const std::string kMediumAsteroid02 = "../assets/gfx/asteroid-medium-02.png";
 const std::string kMediumAsteroid03 = "../assets/gfx/asteroid-medium-03.png";
+const std::string kSmallAsteroid01 = "../assets/gfx/asteroid-small-01.png";
+const std::string kSmallAsteroid02 = "../assets/gfx/asterod-small-02";
+//player character art
 const std::string KPlayerShip = "../assets/gfx/player-ship.png";
 //On initialize scene method.
 void MainGameScene::onInitializeScene()
@@ -39,8 +43,51 @@ void MainGameScene::onInitializeScene()
 	m_background->setOrigin(0.5f, 0.5f);
 	m_background->setPosition(640, 300);
 	addChild(m_background);
+	//set up physics materials for asteroids
+	gbh::PhysicsMaterial material_bigAsteroid;
+	material_bigAsteroid.density = 3000;
+	gbh::PhysicsMaterial material_mediumAsteroid;
+	material_mediumAsteroid.density = 2000;
 	//create and add some obstacles for the player to avoid
+	std::shared_ptr<gbh::SpriteNode> m_asteroid1 = std::make_shared<gbh::SpriteNode>(kBigAsteroid);
+	m_asteroid1->setOrigin(0.5f, 0.5f);
+	m_asteroid1->setPosition(380, 200);
+	m_asteroid1->setName("Asteroid1");
+	m_asteroid1->setPhysicsBody(getPhysicsWorld()->createCircle(80.0f,material_bigAsteroid));
+	m_asteroid1->getPhysicsBody()->setType(gbh::PhysicsBodyType::Static);
+	m_asteroid1->getPhysicsBody()->setAngularDamping(0);
+	m_asteroid1->getPhysicsBody()->applyTorque(20.0f, true);	
+	addChild(m_asteroid1);
 
+	std::shared_ptr<gbh::SpriteNode> m_asteroid2 = std::make_shared<gbh::SpriteNode>(kMediumAsteroid01);
+	m_asteroid2->setOrigin(0.5f, 0.5f);
+	m_asteroid2->setPosition(830, 150);
+	m_asteroid2->setName("Asteroid2");
+	m_asteroid2->setPhysicsBody(getPhysicsWorld()->createCircle(40.0f, material_mediumAsteroid));
+	m_asteroid2->getPhysicsBody()->setType(gbh::PhysicsBodyType::Static);
+	m_asteroid2->getPhysicsBody()->setAngularDamping(0);
+	m_asteroid2->getPhysicsBody()->applyTorque(20.0f, true);
+	addChild(m_asteroid2);
+
+	std::shared_ptr<gbh::SpriteNode>m_asteroid3 = std::make_shared<gbh::SpriteNode>(kMediumAsteroid02);
+	m_asteroid3->setOrigin(0.5f, 0.5f);
+	m_asteroid3->setPosition(330, 450);
+	m_asteroid3->setName("Asteroid3");
+	m_asteroid3->setPhysicsBody(getPhysicsWorld()->createCircle(50.0f, material_mediumAsteroid));
+	m_asteroid3->getPhysicsBody()->setType(gbh::PhysicsBodyType::Static);
+	m_asteroid3->getPhysicsBody()->setAngularDamping(0);
+	m_asteroid3->getPhysicsBody()->applyTorque(20.0f, true);
+	addChild(m_asteroid3);
+
+	std::shared_ptr<gbh::SpriteNode>m_asteroid4 = std::make_shared<gbh::SpriteNode>(kMediumAsteroid03);
+	m_asteroid4->setOrigin(0.5f, 0.5f);
+	m_asteroid4->setPosition(770, 550);
+	m_asteroid4->setName("Asteroid3");
+	m_asteroid4->setPhysicsBody(getPhysicsWorld()->createCircle(40.0f, material_mediumAsteroid));
+	m_asteroid4->getPhysicsBody()->setType(gbh::PhysicsBodyType::Static);
+	m_asteroid4->getPhysicsBody()->setAngularDamping(0);
+	m_asteroid4->getPhysicsBody()->applyTorque(20.0f, true);
+	addChild(m_asteroid4);
 
 	//create spaceship graphics
 	std::shared_ptr<gbh::SpriteNode>m_playerShip = std::make_shared<gbh::SpriteNode>(KPlayerShip);
