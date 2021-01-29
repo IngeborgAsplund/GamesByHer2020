@@ -16,10 +16,10 @@ private:
 	sf::Music m_mainMusic;
 	//physics related variables
 	float accelration = 2000.0f;
-	sf::Vector2f moveForce = sf::Vector2f(0.0f, 0.0f);
-	
+	sf::Vector2f moveForce = sf::Vector2f(0.0f, 0.0f);	
+	std::vector<std::shared_ptr<gbh::Node>> rotatingObstacles;
 	//functions
-
-	//I want to take the input via a separate function that I call from the update function
 	void captureInput();
+	void RotateObstacles();
+	void ToggleDebugDraw();
 };

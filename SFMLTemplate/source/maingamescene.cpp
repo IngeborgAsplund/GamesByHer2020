@@ -58,6 +58,7 @@ void MainGameScene::onInitializeScene()
 	m_asteroid1->getPhysicsBody()->setAngularDamping(0);
 	m_asteroid1->getPhysicsBody()->applyTorque(20.0f, true);	
 	addChild(m_asteroid1);
+	rotatingObstacles.push_back(m_asteroid1);
 
 	std::shared_ptr<gbh::SpriteNode> m_asteroid2 = std::make_shared<gbh::SpriteNode>(kMediumAsteroid01);
 	m_asteroid2->setOrigin(0.5f, 0.5f);
@@ -68,6 +69,7 @@ void MainGameScene::onInitializeScene()
 	m_asteroid2->getPhysicsBody()->setAngularDamping(0);
 	m_asteroid2->getPhysicsBody()->applyTorque(20.0f, true);
 	addChild(m_asteroid2);
+	rotatingObstacles.push_back(m_asteroid2);
 
 	std::shared_ptr<gbh::SpriteNode>m_asteroid3 = std::make_shared<gbh::SpriteNode>(kMediumAsteroid02);
 	m_asteroid3->setOrigin(0.5f, 0.5f);
@@ -78,6 +80,7 @@ void MainGameScene::onInitializeScene()
 	m_asteroid3->getPhysicsBody()->setAngularDamping(0);
 	m_asteroid3->getPhysicsBody()->applyTorque(20.0f, true);
 	addChild(m_asteroid3);
+	rotatingObstacles.push_back(m_asteroid3);
 
 	std::shared_ptr<gbh::SpriteNode>m_asteroid4 = std::make_shared<gbh::SpriteNode>(kMediumAsteroid03);
 	m_asteroid4->setOrigin(0.5f, 0.5f);
@@ -88,6 +91,7 @@ void MainGameScene::onInitializeScene()
 	m_asteroid4->getPhysicsBody()->setAngularDamping(0);
 	m_asteroid4->getPhysicsBody()->applyTorque(20.0f, true);
 	addChild(m_asteroid4);
+	rotatingObstacles.push_back(m_asteroid4);
 
 	//create spaceship graphics
 	std::shared_ptr<gbh::SpriteNode>m_playerShip = std::make_shared<gbh::SpriteNode>(KPlayerShip);
@@ -108,6 +112,7 @@ void MainGameScene::onInitializeScene()
 void MainGameScene:: onUpdate(double deltaTime)
 {
 	captureInput();
+	RotateObstacles();
 }
 void MainGameScene::onShowScene()
 {
@@ -142,4 +147,13 @@ void MainGameScene::captureInput()
 	moveForce = gbh::math::normalize(moveForce);
 	player->getPhysicsBody()->applyForceToCenter(moveForce*accelration);
 	
+}
+//This function takes each obstavle from the list of obstacles and rotate them by a rather low rotation amount this makes for
+// rotating obstacles in the gameword
+void MainGameScene::RotateObstacles()
+{
+	for(int i = 0; i< rotatingObstacles.size(); i++)
+	{
+		rotatingObstacles[i]->rotate(0.54f);
+	}
 }
