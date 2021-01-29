@@ -13,6 +13,7 @@ const std::string kTitleScreenBackground = "../assets/gfx/starfield-01.png";
 const std::string kPlayerShip = "../assets/gfx/player-ship.png";
 const std::string kStartButton = "../assets/gfx/Startbutton.png";
 const std::string kTitleImage = "../assets/gfx/SpaceraceLogo.png";
+const std::string krotatingAsteroid = "../assets/gfx/asteroid-medium-01.png";
 
 
 void TitleScene::onInitializeScene()
@@ -26,6 +27,12 @@ void TitleScene::onInitializeScene()
 	spriteNode->setPosition(640, 300);
 	spriteNode->setOrigin(0.5f, 0.5f);
 	addChild(spriteNode);
+
+	std::shared_ptr<gbh::SpriteNode> rotatingAsteroid = std::make_shared<gbh::SpriteNode>(krotatingAsteroid);
+	rotatingAsteroid->setName("TitleScreenDeco");
+	rotatingAsteroid->setPosition(150, 100);
+	rotatingAsteroid->setOrigin(0.5f, 0.5f);
+	addChild(rotatingAsteroid);
 
 	std::shared_ptr<gbh::SpriteNode> title = std::make_shared<gbh::SpriteNode>(kTitleImage);
     title->setOrigin(0.5f, 0.5f);
@@ -42,20 +49,23 @@ void TitleScene::onInitializeScene()
     startButton->setOrigin(0.5f, 0.5f);
 	startButton->setName("StartButton");
 	addChild(startButton);
+	
+	
 }
 
 
 void TitleScene::onUpdate(double deltaTime)
 {
-    std::shared_ptr<gbh::Node> titleNode = getFirstChildWithName("Title", false);
-    
-    //if (titleNode)
-    //{
-    //    titleNode->move(0, 50.f * (float)deltaTime);//moves title of the game downward, why?
-    //}
+	RotateAsteroid();
 }
-
-
+//separate method rotating the asteroid in the title screen, I do not want the rotation to happen very quicly so I set the value
+// very low as I want the rotating asteroid to be a subtle element that behaves in a slightly more realistic way.(than when it spins a lot as done with a high value)
+void TitleScene::RotateAsteroid()
+{
+	std::shared_ptr<gbh::Node> asteroid = getFirstChildWithName("TitleScreenDeco",false);
+	const float rotateDegree = 0.45f;
+	asteroid->rotate(rotateDegree);
+}
 void TitleScene::onMouseEvent(sf::Event& event)
 {
 	if (event.type == sf::Event::MouseButtonPressed)

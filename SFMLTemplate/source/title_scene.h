@@ -17,4 +17,6 @@ protected:
 private:
 	sf::Font m_robotoFont;
 	sf::Music m_titleMusic;
+	//functions
+	void RotateAsteroid();
 };
