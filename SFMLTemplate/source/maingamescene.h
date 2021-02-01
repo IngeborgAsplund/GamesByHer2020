@@ -11,6 +11,7 @@ protected:
 	//the below functions are used by the game when we want to start soemthing as soon as we enter this scene
 	virtual void onShowScene();
 	virtual void onHideScene();
+	virtual void onKeyboardEvent(sf::Event & event)override;
 private:
 	sf::Font m_robotoFont;
 	sf::Music m_mainMusic;

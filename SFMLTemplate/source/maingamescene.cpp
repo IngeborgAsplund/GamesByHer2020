@@ -117,12 +117,18 @@ void MainGameScene:: onUpdate(double deltaTime)
 void MainGameScene::onShowScene()
 {
 	m_mainMusic.play();
-	setDrawPhysicsDebug(true);
 }
 void MainGameScene::onHideScene()
 {
 	m_mainMusic.stop();
 	setDrawPhysicsDebug(false);
+}
+void MainGameScene::onKeyboardEvent(sf::Event& event)
+{
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::U))
+	{
+		ToggleDebugDraw();
+	}
 }
 void MainGameScene::captureInput() 
 {
@@ -147,6 +153,19 @@ void MainGameScene::captureInput()
 	moveForce = gbh::math::normalize(moveForce);
 	player->getPhysicsBody()->applyForceToCenter(moveForce*accelration);
 	
+}
+// This functions toggles the debugdraw function active or inactive dependent on the state of a bool(getDrawPhysicsDebug) and will be triggered when the player
+//press the U key.
+void MainGameScene::ToggleDebugDraw()
+{
+	if(getDrawPhysicsDebug())
+	{
+		setDrawPhysicsDebug(false);
+	}
+	else if(!getDrawPhysicsDebug())
+	{
+		setDrawPhysicsDebug(true);
+	}
 }
 //This function takes each obstavle from the list of obstacles and rotate them by a rather low rotation amount this makes for
 // rotating obstacles in the gameword
