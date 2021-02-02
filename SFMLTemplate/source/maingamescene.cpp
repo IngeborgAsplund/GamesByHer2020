@@ -136,18 +136,22 @@ void MainGameScene::captureInput()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))		
 	{		
-		moveForce.y -= 1.0f;
+		moveForce.y  -= 1.0;		
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{		
 		moveForce.y += 1.0;
+		/*player->getPhysicsBody()->setLinearDamping(player->getPhysicsBody()->getLinearDamping() + 0.1);*/
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{		
-		moveForce.x -= 1.0;
+		/*player->rotate(-1);*/
+		moveForce.x -= 1.0;		
+
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{		
+		/*player->rotate(1);	*/
 		moveForce.x += 1.0;
 	}
 	moveForce = gbh::math::normalize(moveForce);
