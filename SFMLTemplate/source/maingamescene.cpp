@@ -98,7 +98,8 @@ void MainGameScene::onInitializeScene()
 	m_playerShip->setName("Player");
 	m_playerShip->setOrigin(0.5, 0.5);
 	m_playerShip->setPosition(620, 500);
-	m_playerShip->setScale(0.5, 0.5);
+	m_playerShip->setScale(0.5, -0.5);
+	m_playerShip->rotate(180);
 
 	//Physics for player ship added
 	sf::Vector2f shipsize = sf::Vector2f(55.0f, 102.0f);
@@ -135,27 +136,28 @@ void MainGameScene::captureInput()
 	std::shared_ptr<gbh::Node> player = getFirstChildWithName("Player",false);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))		
-	{		
-		moveForce.y  -= 1.0;		
+	{
+		player->getPhysicsBody()->applyForceToCenter(player->forwardVector()*accelration);
+		/*moveForce.y  -= 1.0;*/
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{		
-		moveForce.y += 1.0;
-		/*player->getPhysicsBody()->setLinearDamping(player->getPhysicsBody()->getLinearDamping() + 0.1);*/
+		/*moveForce.y += 1.0;*/
+		player->getPhysicsBody()->setLinearDamping(player->getPhysicsBody()->getLinearDamping() + 0.1);
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{		
-		/*player->rotate(-1);*/
-		moveForce.x -= 1.0;		
+		player->rotate(-1);
+		/*moveForce.x -= 1.0;*/		
 
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{		
-		/*player->rotate(1);	*/
-		moveForce.x += 1.0;
+		player->rotate(1);	
+		/*moveForce.x += 1.0;*/
 	}
-	moveForce = gbh::math::normalize(moveForce);
-	player->getPhysicsBody()->applyForceToCenter(moveForce*accelration);
+	/*moveForce = gbh::math::normalize(moveForce);
+	player->getPhysicsBody()->applyForceToCenter(moveForce*accelration);*/
 	
 }
 // This functions toggles the debugdraw function active or inactive dependent on the state of a bool(getDrawPhysicsDebug) and will be triggered when the player
