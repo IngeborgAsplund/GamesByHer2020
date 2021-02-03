@@ -31,17 +31,18 @@ void MainGameScene::onInitializeScene()
 
 	//create the physics world
 	Scene::createPhysicsWorld(sf::Vector2f(0.0f,0.0f));
+
 	std::shared_ptr<gbh::Node> m_boudnaries = std::make_shared<gbh::Node>();//node that will hold the boundaries for the world
-	m_boudnaries->setPhysicsBody(getPhysicsWorld()->createEdgeBox(sf::Vector2(1270.0f,710.0f)));
+	m_boudnaries->setPhysicsBody(getPhysicsWorld()->createEdgeBox(sf::Vector2(2048.0f,2048.0f)));
 	m_boudnaries->getPhysicsBody()->setType(gbh::PhysicsBodyType::Static);
-	m_boudnaries->setPosition(1280.0 / 2, 720.0 / 2);
+	m_boudnaries->setPosition(260, -100);
 	addChild(m_boudnaries);
 	
 	//create and add the background
 	std::shared_ptr<gbh::SpriteNode> m_background = std::make_shared<gbh::SpriteNode>(kMainGameBackground);
 	m_background->setName("Background");
 	m_background->setOrigin(0.5f, 0.5f);
-	m_background->setPosition(640, 300);
+	m_background->setPosition(260,-100);
 	addChild(m_background);
 	//set up physics materials for asteroids
 	gbh::PhysicsMaterial material_bigAsteroid;
@@ -109,6 +110,13 @@ void MainGameScene::onInitializeScene()
 	m_playerShip->getPhysicsBody()->setFixedRotation(true);
 
 	addChild(m_playerShip);
+
+	m_MainCamera = std::make_shared<FollowCameraNode>();
+	m_MainCamera->SetTarget(m_playerShip);
+	m_MainCamera->setPosition(640, 360);
+	addChild(m_MainCamera);
+	setCamera(m_MainCamera);
+
 }
 void MainGameScene:: onUpdate(double deltaTime)
 {
@@ -137,6 +145,7 @@ void MainGameScene::captureInput()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))		
 	{
+		player->getPhysicsBody()->setLinearDamping(3.0);
 		player->getPhysicsBody()->applyForceToCenter(player->forwardVector()*accelration);
 		/*moveForce.y  -= 1.0;*/
 	}

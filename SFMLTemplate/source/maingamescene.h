@@ -1,4 +1,5 @@
 #pragma once
+#include "followcameranode.h"
 #include "sfml-engine/scene.h"
 #include <SFML/Audio.hpp>
 
@@ -19,6 +20,7 @@ private:
 	float accelration = 2000.0f;
 	sf::Vector2f moveForce = sf::Vector2f(0.0f, 0.0f);	
 	std::vector<std::shared_ptr<gbh::Node>> rotatingObstacles;
+	std::shared_ptr<FollowCameraNode> m_MainCamera;
 	//functions
 	void captureInput();
 	void RotateObstacles();
