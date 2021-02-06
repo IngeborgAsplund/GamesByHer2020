@@ -20,6 +20,8 @@ const std::string kMediumAsteroid02 = "../assets/gfx/asteroid-medium-02.png";
 const std::string kMediumAsteroid03 = "../assets/gfx/asteroid-medium-03.png";
 const std::string kSmallAsteroid01 = "../assets/gfx/asteroid-small-01.png";
 const std::string kSmallAsteroid02 = "../assets/gfx/asterod-small-02";
+//checkpoint art
+const std::string kCheckpoint = "../assets/gfx/checkpoint.png";
 //player character art
 const std::string KPlayerShip = "../assets/gfx/player-ship.png";
 //On initialize scene method.
@@ -35,15 +37,17 @@ void MainGameScene::onInitializeScene()
 	std::shared_ptr<gbh::Node> m_boudnaries = std::make_shared<gbh::Node>();//node that will hold the boundaries for the world
 	m_boudnaries->setPhysicsBody(getPhysicsWorld()->createEdgeBox(sf::Vector2(2048.0f,2048.0f)));
 	m_boudnaries->getPhysicsBody()->setType(gbh::PhysicsBodyType::Static);
-	m_boudnaries->setPosition(260, -100);
+	m_boudnaries->setPosition(260, -200);
 	addChild(m_boudnaries);
 	
 	//create and add the background
 	std::shared_ptr<gbh::SpriteNode> m_background = std::make_shared<gbh::SpriteNode>(kMainGameBackground);
 	m_background->setName("Background");
 	m_background->setOrigin(0.5f, 0.5f);
-	m_background->setPosition(260,-100);
+	m_background->setPosition(260,-200);
 	addChild(m_background);
+	GeneratePositions();
+	PlaceMyCeckpoints();
 	//set up physics materials for asteroids
 	gbh::PhysicsMaterial material_bigAsteroid;
 	material_bigAsteroid.density = 3000;
@@ -98,7 +102,7 @@ void MainGameScene::onInitializeScene()
 	std::shared_ptr<gbh::SpriteNode>m_playerShip = std::make_shared<gbh::SpriteNode>(KPlayerShip);
 	m_playerShip->setName("Player");
 	m_playerShip->setOrigin(0.5, 0.5);
-	m_playerShip->setPosition(620, 500);
+	m_playerShip->setPosition(620, 600);
 	m_playerShip->setScale(0.5, -0.5);
 	m_playerShip->rotate(180);
 
@@ -113,7 +117,7 @@ void MainGameScene::onInitializeScene()
 
 	m_MainCamera = std::make_shared<FollowCameraNode>();
 	m_MainCamera->SetTarget(m_playerShip);
-	m_MainCamera->setPosition(640, 360);
+	m_MainCamera->setPosition(640, 460);
 	addChild(m_MainCamera);
 	setCamera(m_MainCamera);
 
@@ -169,6 +173,15 @@ void MainGameScene::captureInput()
 	player->getPhysicsBody()->applyForceToCenter(moveForce*accelration);*/
 	
 }
+//This function takes each obstavle from the list of obstacles and rotate them by a rather low rotation amount this makes for
+// rotating obstacles in the gameword
+void MainGameScene::RotateObstacles()
+{
+	for(int i = 0; i< rotatingObstacles.size(); i++)
+	{
+		rotatingObstacles[i]->rotate(0.54f);
+	}
+}
 // This functions toggles the debugdraw function active or inactive dependent on the state of a bool(getDrawPhysicsDebug) and will be triggered when the player
 //press the U key.
 void MainGameScene::ToggleDebugDraw()
@@ -182,12 +195,30 @@ void MainGameScene::ToggleDebugDraw()
 		setDrawPhysicsDebug(true);
 	}
 }
-//This function takes each obstavle from the list of obstacles and rotate them by a rather low rotation amount this makes for
-// rotating obstacles in the gameword
-void MainGameScene::RotateObstacles()
+//Here we generate the positions of each checkpoint(and maybee later obstacles such as asteroids) simply put we fill a vector list of vector 2s with adequate positions.
+void MainGameScene::GeneratePositions()
 {
-	for(int i = 0; i< rotatingObstacles.size(); i++)
-	{
-		rotatingObstacles[i]->rotate(0.54f);
+	positions.push_back(sf::Vector2f(580,280));
+	positions.push_back(sf::Vector2f(100, 400));
+	positions.push_back(sf::Vector2f(-100, 100));
+	positions.push_back(sf::Vector2f(500, -100));
+	positions.push_back(sf::Vector2f(700, -500));
+	positions.push_back(sf::Vector2f(300, -800));
+	positions.push_back(sf::Vector2f(100, -400));
+	positions.push_back(sf::Vector2f(-200, -700));
+	positions.push_back(sf::Vector2f(-300, -400));
+	positions.push_back(sf::Vector2f(-400, 0));
+	positions.push_back(sf::Vector2f(-250, 500));	
+}
+//Place out the checkpoints according to the positions in the list
+void MainGameScene::PlaceMyCeckpoints()
+{
+	for(int i =0; i <positions.size(); i++)
+	{	
+		std::shared_ptr<CheckPoint> point = std::make_shared<CheckPoint>(kCheckpoint);
+		point->setPhysicsBody(getPhysicsWorld()->createCircle(50));
+		point->PlaceCeckpoint(positions[i]);
+		addChild(point);
+		checkpoints.push_back(point);
 	}
 }

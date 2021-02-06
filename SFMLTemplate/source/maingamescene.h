@@ -1,4 +1,5 @@
 #pragma once
+#include "checkpoint.h"
 #include "followcameranode.h"
 #include "sfml-engine/scene.h"
 #include <SFML/Audio.hpp>
@@ -21,8 +22,13 @@ private:
 	sf::Vector2f moveForce = sf::Vector2f(0.0f, 0.0f);	
 	std::vector<std::shared_ptr<gbh::Node>> rotatingObstacles;
 	std::shared_ptr<FollowCameraNode> m_MainCamera;
+	//checkpoint related variables
+	std::vector<sf::Vector2f> positions;
+	std::vector<std::shared_ptr<CheckPoint>> checkpoints;
 	//functions
 	void captureInput();
 	void RotateObstacles();
 	void ToggleDebugDraw();
+	void GeneratePositions();
+	void PlaceMyCeckpoints();
 };
