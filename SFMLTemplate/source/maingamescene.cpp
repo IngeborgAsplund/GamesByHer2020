@@ -121,6 +121,8 @@ void MainGameScene::onInitializeScene()
 	m_MainCamera->setPosition(640, 460);
 	addChild(m_MainCamera);
 	setCamera(m_MainCamera);
+	m_MainCamera->SetTrackingArea(250.0f, 150.0);
+	m_MainCamera->SetSpeed(2);
 
 	AdvanceCheckpoints();
 
@@ -145,6 +147,7 @@ void MainGameScene::onKeyboardEvent(sf::Event& event)
 	{
 		ToggleDebugDraw();
 	}
+	m_MainCamera->ZoomCamera();
 }
 void MainGameScene::onBeginPhysicsContact(const gbh::PhysicsContact& contact)
 {
