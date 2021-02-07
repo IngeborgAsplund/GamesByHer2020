@@ -5,12 +5,11 @@
 
 class CheckPoint: public gbh::SpriteNode
 {
-protected:
-	
 public:
 	CheckPoint(const std::string& filename);
 	void PlaceCeckpoint(sf::Vector2f & position);
 	void ToggleOnOff(bool activate);
+	void MarkAsReached();//when we reach a checkpoint this should be called
 private:
 	//variables	
 	bool active;

@@ -48,6 +48,7 @@ void MainGameScene::onInitializeScene()
 	addChild(m_background);
 	GeneratePositions();
 	PlaceMyCeckpoints();
+	
 	//set up physics materials for asteroids
 	gbh::PhysicsMaterial material_bigAsteroid;
 	material_bigAsteroid.density = 3000;
@@ -99,27 +100,29 @@ void MainGameScene::onInitializeScene()
 	rotatingObstacles.push_back(m_asteroid4);
 
 	//create spaceship graphics
-	std::shared_ptr<gbh::SpriteNode>m_playerShip = std::make_shared<gbh::SpriteNode>(KPlayerShip);
-	m_playerShip->setName("Player");
-	m_playerShip->setOrigin(0.5, 0.5);
-	m_playerShip->setPosition(620, 600);
-	m_playerShip->setScale(0.5, -0.5);
-	m_playerShip->rotate(180);
+	m_player = std::make_shared<gbh::SpriteNode>(KPlayerShip);
+	m_player->setName("Player");
+	m_player->setOrigin(0.5, 0.5);
+	m_player->setPosition(620, 600);
+	m_player->setScale(0.5, -0.5);
+	m_player->rotate(180);
 
 	//Physics for player ship added
 	sf::Vector2f shipsize = sf::Vector2f(55.0f, 102.0f);
-	m_playerShip->setPhysicsBody(getPhysicsWorld()->createBox(shipsize*0.5f));
-	m_playerShip->getPhysicsBody()->setType(gbh::PhysicsBodyType::Dynamic);
-	m_playerShip->getPhysicsBody()->setLinearDamping(3.0f);
-	m_playerShip->getPhysicsBody()->setFixedRotation(true);
+	m_player->setPhysicsBody(getPhysicsWorld()->createBox(shipsize*0.5f));
+	m_player->getPhysicsBody()->setType(gbh::PhysicsBodyType::Dynamic);
+	m_player->getPhysicsBody()->setLinearDamping(3.0f);
+	m_player->getPhysicsBody()->setFixedRotation(true);
 
-	addChild(m_playerShip);
+	addChild(m_player);
 
 	m_MainCamera = std::make_shared<FollowCameraNode>();
-	m_MainCamera->SetTarget(m_playerShip);
+	m_MainCamera->SetTarget(m_player);
 	m_MainCamera->setPosition(640, 460);
 	addChild(m_MainCamera);
 	setCamera(m_MainCamera);
+
+	AdvanceCheckpoints();
 
 }
 void MainGameScene:: onUpdate(double deltaTime)
@@ -143,30 +146,63 @@ void MainGameScene::onKeyboardEvent(sf::Event& event)
 		ToggleDebugDraw();
 	}
 }
-void MainGameScene::captureInput() 
+void MainGameScene::onBeginPhysicsContact(const gbh::PhysicsContact& contact)
 {
-	std::shared_ptr<gbh::Node> player = getFirstChildWithName("Player",false);
+	//get the reference to the player character
+	gbh::Node* player = m_player.get();
+	if(contact.containsNode(player))
+	{
+		gbh::Node* otherNode = contact.otherNode(player);
+		if(otherNode->getName()=="checkPoint")
+		{
+			AdvanceCheckpoints();
+		}
+	}
+}
+//Here we advance what checkpoint we want to show
+void MainGameScene::AdvanceCheckpoints()
+{
+	if(currentCheckPoint>=0&&currentCheckPoint<checkpoints.size())
+	{
+		checkpoints[currentCheckPoint]->MarkAsReached();
+		currentCheckPoint++;
+	}
+	else if(currentCheckPoint==-1)
+	{
+		currentCheckPoint = 0;
+	}
+	if(currentCheckPoint<checkpoints.size())
+	{
+		checkpoints[currentCheckPoint]->ToggleOnOff(true);
+	}
+	else
+	{
+		std::cout << "Congratulations you have finished the race";
+	}
+}
+void MainGameScene::captureInput() 
+{	
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))		
 	{
-		player->getPhysicsBody()->setLinearDamping(3.0);
-		player->getPhysicsBody()->applyForceToCenter(player->forwardVector()*accelration);
+		m_player->getPhysicsBody()->setLinearDamping(3.0);
+		m_player->getPhysicsBody()->applyForceToCenter(m_player->forwardVector()*accelration);
 		/*moveForce.y  -= 1.0;*/
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{		
 		/*moveForce.y += 1.0;*/
-		player->getPhysicsBody()->setLinearDamping(player->getPhysicsBody()->getLinearDamping() + 0.1);
+		m_player->getPhysicsBody()->setLinearDamping(m_player->getPhysicsBody()->getLinearDamping() + 0.1);
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{		
-		player->rotate(-1);
+		m_player->rotate(-1);
 		/*moveForce.x -= 1.0;*/		
 
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{		
-		player->rotate(1);	
+		m_player->rotate(1);	
 		/*moveForce.x += 1.0;*/
 	}
 	/*moveForce = gbh::math::normalize(moveForce);

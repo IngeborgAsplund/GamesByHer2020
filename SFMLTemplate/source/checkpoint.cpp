@@ -5,6 +5,7 @@ CheckPoint::CheckPoint(const std::string& filename) :gbh::SpriteNode(filename)
 {
 	setName("checkPoint");
 }
+
 //places the checkpoint in the world at a given position and sets the color to white semitransparent in order to mark them inactive
 //it also 
 void CheckPoint::PlaceCeckpoint(sf::Vector2f& position)
@@ -21,7 +22,7 @@ void CheckPoint::ToggleOnOff(bool activate)
 {
 	if(activate)
 	{
-		setColor(sf::Color(117, 124, 165, 64));
+		setColor(sf::Color(117, 124, 165, 192));
 		getPhysicsBody()->setEnabled(true);
 		active = true;
 	}
@@ -30,5 +31,13 @@ void CheckPoint::ToggleOnOff(bool activate)
 		setColor(sf::Color(255, 255, 255, 64));
 		getPhysicsBody()->setEnabled(false);
 		active = false;
+	}
+}
+void CheckPoint::MarkAsReached()
+{
+	if(active)
+	{
+		setColor(sf::Color(107, 182, 58,128));
+		getPhysicsBody()->setEnabled(false);
 	}
 }

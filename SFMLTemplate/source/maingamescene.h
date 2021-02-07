@@ -14,6 +14,7 @@ protected:
 	virtual void onShowScene();
 	virtual void onHideScene();
 	virtual void onKeyboardEvent(sf::Event & event)override;
+	void onBeginPhysicsContact(const gbh::PhysicsContact& contact)override;
 private:
 	sf::Font m_robotoFont;
 	sf::Music m_mainMusic;
@@ -22,7 +23,9 @@ private:
 	sf::Vector2f moveForce = sf::Vector2f(0.0f, 0.0f);	
 	std::vector<std::shared_ptr<gbh::Node>> rotatingObstacles;
 	std::shared_ptr<FollowCameraNode> m_MainCamera;
+	std::shared_ptr<gbh::SpriteNode> m_player;
 	//checkpoint related variables
+	int currentCheckPoint = -1;
 	std::vector<sf::Vector2f> positions;
 	std::vector<std::shared_ptr<CheckPoint>> checkpoints;
 	//functions
@@ -31,4 +34,5 @@ private:
 	void ToggleDebugDraw();
 	void GeneratePositions();
 	void PlaceMyCeckpoints();
+	void AdvanceCheckpoints();
 };
