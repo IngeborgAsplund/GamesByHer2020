@@ -32,7 +32,6 @@ private:
 	void captureInput();
 	void RotateObstacles();
 	void ToggleDebugDraw();
-	void GeneratePositions();
-	void PlaceMyCeckpoints();
+	void LoadLevel(const std::string& fileName);
 	void AdvanceCheckpoints();
 };

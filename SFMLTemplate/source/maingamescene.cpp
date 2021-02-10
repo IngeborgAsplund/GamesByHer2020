@@ -1,6 +1,7 @@
 //include headerfile for this scriptfile
 #include"maingamescene.h"
 //include of standard c++ libraries
+#include<fstream>
 #include<iostream>
 //engine specific includes.
 #include"sfml-engine/game.h"
@@ -8,6 +9,8 @@
 #include"sfml-engine/spritenode.h"
 #include"sfml-engine/textnode.h"
 #include"sfml-engine/mathutils.h"
+
+#include "nlohmann/json.hpp"
 
 //definition of used assets
 const std::string kMainMusic = "../assets/music/titlescreen.ogg";
@@ -33,12 +36,6 @@ void MainGameScene::onInitializeScene()
 
 	//create the physics world
 	Scene::createPhysicsWorld(sf::Vector2f(0.0f,0.0f));
-
-	std::shared_ptr<gbh::Node> m_boudnaries = std::make_shared<gbh::Node>();//node that will hold the boundaries for the world
-	m_boudnaries->setPhysicsBody(getPhysicsWorld()->createEdgeBox(sf::Vector2(2048.0f,2048.0f)));
-	m_boudnaries->getPhysicsBody()->setType(gbh::PhysicsBodyType::Static);
-	m_boudnaries->setPosition(260, -200);
-	addChild(m_boudnaries);
 	
 	//create and add the background
 	std::shared_ptr<gbh::SpriteNode> m_background = std::make_shared<gbh::SpriteNode>(kMainGameBackground);
@@ -46,8 +43,6 @@ void MainGameScene::onInitializeScene()
 	m_background->setOrigin(0.5f, 0.5f);
 	m_background->setPosition(260,-200);
 	addChild(m_background);
-	GeneratePositions();
-	PlaceMyCeckpoints();
 	
 	//set up physics materials for asteroids
 	gbh::PhysicsMaterial material_bigAsteroid;
@@ -124,8 +119,6 @@ void MainGameScene::onInitializeScene()
 	m_MainCamera->SetTrackingArea(250.0f, 150.0);
 	m_MainCamera->SetSpeed(2);
 
-	AdvanceCheckpoints();
-
 }
 void MainGameScene:: onUpdate(double deltaTime)
 {
@@ -134,6 +127,8 @@ void MainGameScene:: onUpdate(double deltaTime)
 }
 void MainGameScene::onShowScene()
 {
+	LoadLevel("../assets/Levels/level1.json");
+	AdvanceCheckpoints();
 	m_mainMusic.play();
 }
 void MainGameScene::onHideScene()
@@ -234,30 +229,52 @@ void MainGameScene::ToggleDebugDraw()
 		setDrawPhysicsDebug(true);
 	}
 }
-//Here we generate the positions of each checkpoint(and maybee later obstacles such as asteroids) simply put we fill a vector list of vector 2s with adequate positions.
-void MainGameScene::GeneratePositions()
+//As the functions at the very bottom of this program becomes obsolete I introduce a function for loading levels from JSON files
+//using the Nholman library
+void MainGameScene::LoadLevel(const std::string& fileName)
 {
-	positions.push_back(sf::Vector2f(580,280));
-	positions.push_back(sf::Vector2f(100, 400));
-	positions.push_back(sf::Vector2f(-100, 100));
-	positions.push_back(sf::Vector2f(500, -100));
-	positions.push_back(sf::Vector2f(700, -500));
-	positions.push_back(sf::Vector2f(300, -800));
-	positions.push_back(sf::Vector2f(100, -400));
-	positions.push_back(sf::Vector2f(-200, -700));
-	positions.push_back(sf::Vector2f(-300, -400));
-	positions.push_back(sf::Vector2f(-400, 0));
-	positions.push_back(sf::Vector2f(-250, 500));	
-}
-//Place out the checkpoints according to the positions in the list
-void MainGameScene::PlaceMyCeckpoints()
-{
-	for(int i =0; i <positions.size(); i++)
-	{	
-		std::shared_ptr<CheckPoint> point = std::make_shared<CheckPoint>(kCheckpoint);
-		point->setPhysicsBody(getPhysicsWorld()->createCircle(50));
-		point->PlaceCeckpoint(positions[i]);
-		addChild(point);
-		checkpoints.push_back(point);
+	//declarations of the variables a ifstream file and a jsonFile
+	std::ifstream file(fileName);
+	nlohmann::json jsonFile;
+	//try and catch statement
+	try
+	{
+		jsonFile = nlohmann::json::parse(file);
+	}
+	catch(const std::exception& except)
+	{
+		std::cout << "Failed to load level from file " << fileName << ":" << except.what() << "\n";
+	}
+	//define what is found in json object
+	nlohmann::json jsWorldBoundary = jsonFile["WorldBoundaries"];
+	float xSize = jsWorldBoundary["sizeX"].get<float>();
+	float ySize = jsWorldBoundary["sizeY"].get<float>();
+	float xPos = jsWorldBoundary["PlaceMentX"].get<float>();
+	float yPos = jsWorldBoundary["placementY"].get<float>();
+	
+	std::shared_ptr<gbh::Node> m_boudnaries = std::make_shared<gbh::Node>();//node that will hold the boundaries for the world
+	m_boudnaries->setPhysicsBody(getPhysicsWorld()->createEdgeBox(sf::Vector2(xSize,ySize)));
+	m_boudnaries->getPhysicsBody()->setType(gbh::PhysicsBodyType::Static);
+	m_boudnaries->setPosition(xPos,yPos);
+	addChild(m_boudnaries);
+
+	nlohmann::json jsonCheckpoints = jsonFile["checkpoints"];
+	if(!jsonCheckpoints.is_array())
+	{
+		std::cout << "Level file either does not include 'checkpoint' entry of it is not an array";
+		return;
+	}
+	if(jsonCheckpoints.is_array())
+	{
+		for(int i =0; i<jsonCheckpoints.size();i++)
+		{
+			float x = jsonCheckpoints[i]["x"].get<float>();
+			float y = jsonCheckpoints[i]["y"].get<float>();
+			std::shared_ptr<CheckPoint> point = std::make_shared<CheckPoint>(kCheckpoint);
+			point->setPhysicsBody(getPhysicsWorld()->createCircle(50));
+			point->PlaceCeckpoint(sf::Vector2f(x, y));
+			addChild(point);
+			checkpoints.push_back(point);
+		}
 	}
 }
