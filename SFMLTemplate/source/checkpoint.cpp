@@ -5,7 +5,11 @@ CheckPoint::CheckPoint(const std::string& filename) :gbh::SpriteNode(filename)
 {
 	setName("checkPoint");
 }
-
+//getter for the bool active
+bool CheckPoint::GetActive()
+{
+	return active;
+}
 //places the checkpoint in the world at a given position and sets the color to white semitransparent in order to mark them inactive
 //it also 
 void CheckPoint::PlaceCeckpoint(sf::Vector2f& position)

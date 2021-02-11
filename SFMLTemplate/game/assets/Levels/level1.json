@@ -6,6 +6,12 @@
         "PlaceMentX":260,
         "placementY":-200
     },
+    "BackgroundImage":
+    {
+        "imagefile":"../assets/gfx/starfield-01.png",
+        "posX":260,
+        "posY":-200
+    },
     "checkpoints":
     [
         {
@@ -52,5 +58,48 @@
             "x":-250,
             "y":500
         }
-    ]
+    ],
+    "Asteroids":
+    [
+        {
+            "image":"../assets/gfx/asteroid-large-01.png",
+            "x":380,
+            "y":200,
+            "type": "Big",
+            "size":80
+        },
+        {
+            "image":"../assets/gfx/asteroid-medium-01.png",
+            "x":830,
+            "y":150,
+            "type":"Medium",
+            "size":40
+        },
+        {
+            "image":"../assets/gfx/asteroid-medium-02.png",
+            "x":330,
+            "y":450,
+            "type":"Medium",
+            "size":50
+        },
+        {
+            "image":"../assets/gfx/asteroid-medium-03.png",
+            "x":770,
+            "y":550,
+            "type":"Medium",
+            "size":40
+        }
+    ],
+    "PlayerPosition":
+    {
+        "playerX":620,
+        "playerY":600
+    },
+    "CameraVariable":
+    {
+        "cameraX":640,
+        "cameraY":460,
+        "trackingX":250,
+        "trackingY":150
+    }
 }

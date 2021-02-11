@@ -26,12 +26,18 @@ private:
 	std::shared_ptr<gbh::SpriteNode> m_player;
 	//checkpoint related variables
 	int currentCheckPoint = -1;
-	std::vector<sf::Vector2f> positions;
 	std::vector<std::shared_ptr<CheckPoint>> checkpoints;
+	//time tracking variables
+	double m_playTime = 0;
+	std::shared_ptr<gbh::TextNode> m_timerText;	
+	bool m_courseFinished = false;
 	//functions
 	void captureInput();
 	void RotateObstacles();
 	void ToggleDebugDraw();
 	void LoadLevel(const std::string& fileName);
 	void AdvanceCheckpoints();
+	void CheckRaceCourseState();//function that count the number of activated checkpoints and
+	void UpdateMyTimer(double deltaTime);
+	void EndGame();//when we have reached all of the checkpoints we can press space to return to the title scene
 };

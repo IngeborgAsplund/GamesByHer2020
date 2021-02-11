@@ -1,4 +1,5 @@
 //include headerfile for this scriptfile
+#include"asteroid.h"
 #include"maingamescene.h"
 //include of standard c++ libraries
 #include<fstream>
@@ -15,7 +16,6 @@
 //definition of used assets
 const std::string kMainMusic = "../assets/music/titlescreen.ogg";
 const std::string kMainGameFont = "../assets/fonts/roboto-regular.ttf";
-const std::string kMainGameBackground = "../assets/gfx/starfield-01.png";
 //Asteroids/obstacles
 const std::string kBigAsteroid = "../assets/gfx/asteroid-large-01.png";
 const std::string kMediumAsteroid01 = "../assets/gfx/asteroid-medium-01.png";
@@ -33,101 +33,22 @@ void MainGameScene::onInitializeScene()
 	//load the font we want to use
 	m_robotoFont.loadFromFile(kMainGameFont);
 	m_mainMusic.openFromFile(kMainMusic);
-
 	//create the physics world
-	Scene::createPhysicsWorld(sf::Vector2f(0.0f,0.0f));
-	
-	//create and add the background
-	std::shared_ptr<gbh::SpriteNode> m_background = std::make_shared<gbh::SpriteNode>(kMainGameBackground);
-	m_background->setName("Background");
-	m_background->setOrigin(0.5f, 0.5f);
-	m_background->setPosition(260,-200);
-	addChild(m_background);
-	
-	//set up physics materials for asteroids
-	gbh::PhysicsMaterial material_bigAsteroid;
-	material_bigAsteroid.density = 3000;
-	gbh::PhysicsMaterial material_mediumAsteroid;
-	material_mediumAsteroid.density = 2000;
-	//create and add some obstacles for the player to avoid
-	std::shared_ptr<gbh::SpriteNode> m_asteroid1 = std::make_shared<gbh::SpriteNode>(kBigAsteroid);
-	m_asteroid1->setOrigin(0.5f, 0.5f);
-	m_asteroid1->setPosition(380, 200);
-	m_asteroid1->setName("Asteroid1");
-	m_asteroid1->setPhysicsBody(getPhysicsWorld()->createCircle(80.0f,material_bigAsteroid));
-	m_asteroid1->getPhysicsBody()->setType(gbh::PhysicsBodyType::Static);
-	m_asteroid1->getPhysicsBody()->setAngularDamping(0);
-	m_asteroid1->getPhysicsBody()->applyTorque(20.0f, true);	
-	addChild(m_asteroid1);
-	rotatingObstacles.push_back(m_asteroid1);
-
-	std::shared_ptr<gbh::SpriteNode> m_asteroid2 = std::make_shared<gbh::SpriteNode>(kMediumAsteroid01);
-	m_asteroid2->setOrigin(0.5f, 0.5f);
-	m_asteroid2->setPosition(830, 150);
-	m_asteroid2->setName("Asteroid2");
-	m_asteroid2->setPhysicsBody(getPhysicsWorld()->createCircle(40.0f, material_mediumAsteroid));
-	m_asteroid2->getPhysicsBody()->setType(gbh::PhysicsBodyType::Static);
-	m_asteroid2->getPhysicsBody()->setAngularDamping(0);
-	m_asteroid2->getPhysicsBody()->applyTorque(20.0f, true);
-	addChild(m_asteroid2);
-	rotatingObstacles.push_back(m_asteroid2);
-
-	std::shared_ptr<gbh::SpriteNode>m_asteroid3 = std::make_shared<gbh::SpriteNode>(kMediumAsteroid02);
-	m_asteroid3->setOrigin(0.5f, 0.5f);
-	m_asteroid3->setPosition(330, 450);
-	m_asteroid3->setName("Asteroid3");
-	m_asteroid3->setPhysicsBody(getPhysicsWorld()->createCircle(50.0f, material_mediumAsteroid));
-	m_asteroid3->getPhysicsBody()->setType(gbh::PhysicsBodyType::Static);
-	m_asteroid3->getPhysicsBody()->setAngularDamping(0);
-	m_asteroid3->getPhysicsBody()->applyTorque(20.0f, true);
-	addChild(m_asteroid3);
-	rotatingObstacles.push_back(m_asteroid3);
-
-	std::shared_ptr<gbh::SpriteNode>m_asteroid4 = std::make_shared<gbh::SpriteNode>(kMediumAsteroid03);
-	m_asteroid4->setOrigin(0.5f, 0.5f);
-	m_asteroid4->setPosition(770, 550);
-	m_asteroid4->setName("Asteroid3");
-	m_asteroid4->setPhysicsBody(getPhysicsWorld()->createCircle(40.0f, material_mediumAsteroid));
-	m_asteroid4->getPhysicsBody()->setType(gbh::PhysicsBodyType::Static);
-	m_asteroid4->getPhysicsBody()->setAngularDamping(0);
-	m_asteroid4->getPhysicsBody()->applyTorque(20.0f, true);
-	addChild(m_asteroid4);
-	rotatingObstacles.push_back(m_asteroid4);
-
-	//create spaceship graphics
-	m_player = std::make_shared<gbh::SpriteNode>(KPlayerShip);
-	m_player->setName("Player");
-	m_player->setOrigin(0.5, 0.5);
-	m_player->setPosition(620, 600);
-	m_player->setScale(0.5, -0.5);
-	m_player->rotate(180);
-
-	//Physics for player ship added
-	sf::Vector2f shipsize = sf::Vector2f(55.0f, 102.0f);
-	m_player->setPhysicsBody(getPhysicsWorld()->createBox(shipsize*0.5f));
-	m_player->getPhysicsBody()->setType(gbh::PhysicsBodyType::Dynamic);
-	m_player->getPhysicsBody()->setLinearDamping(3.0f);
-	m_player->getPhysicsBody()->setFixedRotation(true);
-
-	addChild(m_player);
-
-	m_MainCamera = std::make_shared<FollowCameraNode>();
-	m_MainCamera->SetTarget(m_player);
-	m_MainCamera->setPosition(640, 460);
-	addChild(m_MainCamera);
-	setCamera(m_MainCamera);
-	m_MainCamera->SetTrackingArea(250.0f, 150.0);
-	m_MainCamera->SetSpeed(2);
-
+	Scene::createPhysicsWorld(sf::Vector2f(0.0f,0.0f));		
 }
 void MainGameScene:: onUpdate(double deltaTime)
 {
 	captureInput();
 	RotateObstacles();
+	UpdateMyTimer(deltaTime);
 }
 void MainGameScene::onShowScene()
 {
 	LoadLevel("../assets/Levels/level1.json");
+	m_timerText = std::make_shared<gbh::TextNode>("0",m_robotoFont,40);
+	m_timerText->setOrigin(1, 1);
+	m_timerText->setPosition(1270, 700);
+	getOverlay().addChild(m_timerText);
 	AdvanceCheckpoints();
 	m_mainMusic.play();
 }
@@ -143,6 +64,7 @@ void MainGameScene::onKeyboardEvent(sf::Event& event)
 		ToggleDebugDraw();
 	}
 	m_MainCamera->ZoomCamera();
+	EndGame();
 }
 void MainGameScene::onBeginPhysicsContact(const gbh::PhysicsContact& contact)
 {
@@ -163,6 +85,7 @@ void MainGameScene::AdvanceCheckpoints()
 	if(currentCheckPoint>=0&&currentCheckPoint<checkpoints.size())
 	{
 		checkpoints[currentCheckPoint]->MarkAsReached();
+		CheckRaceCourseState();
 		currentCheckPoint++;
 	}
 	else if(currentCheckPoint==-1)
@@ -176,6 +99,28 @@ void MainGameScene::AdvanceCheckpoints()
 	else
 	{
 		std::cout << "Congratulations you have finished the race";
+	}
+}
+//This function goes through the checkpoint and check if they are active and increase a counter for each of them that is active.
+//when the number of active checkpoints is equal to the number of checkpoints in the game
+void MainGameScene::CheckRaceCourseState()
+{
+	int reachedCheckpoints = 0;
+	for(int i = 0; i<checkpoints.size(); i++)
+	{
+		if (checkpoints[i]->GetActive())
+		{
+			reachedCheckpoints++;
+		}
+	}
+	if(reachedCheckpoints==checkpoints.size())
+	{
+		m_courseFinished = true;
+		std::shared_ptr<gbh::TextNode> endText = std::make_shared<gbh::TextNode>("Press space to return to menue", m_robotoFont, 50);
+		endText->setOrigin(0.5, 0.5);
+		endText->setPosition(500, 500);
+		endText->setName("GameOver");
+		getOverlay().addChild(endText);
 	}
 }
 void MainGameScene::captureInput() 
@@ -246,22 +191,33 @@ void MainGameScene::LoadLevel(const std::string& fileName)
 		std::cout << "Failed to load level from file " << fileName << ":" << except.what() << "\n";
 	}
 	//define what is found in json object
+	//boundary
 	nlohmann::json jsWorldBoundary = jsonFile["WorldBoundaries"];
 	float xSize = jsWorldBoundary["sizeX"].get<float>();
 	float ySize = jsWorldBoundary["sizeY"].get<float>();
 	float xPos = jsWorldBoundary["PlaceMentX"].get<float>();
 	float yPos = jsWorldBoundary["placementY"].get<float>();
-	
+
 	std::shared_ptr<gbh::Node> m_boudnaries = std::make_shared<gbh::Node>();//node that will hold the boundaries for the world
 	m_boudnaries->setPhysicsBody(getPhysicsWorld()->createEdgeBox(sf::Vector2(xSize,ySize)));
 	m_boudnaries->getPhysicsBody()->setType(gbh::PhysicsBodyType::Static);
 	m_boudnaries->setPosition(xPos,yPos);
 	addChild(m_boudnaries);
+	//bg image
+	nlohmann::json jsBackground = jsonFile["BackgroundImage"];
+	const std::string backgroundImage = jsBackground["imagefile"].get<std::string>();
+	float bgPosX = jsBackground["posX"].get<float>();
+	float bgPosY = jsBackground["posY"].get<float>();
+	std::shared_ptr<gbh::SpriteNode> m_background = std::make_shared<gbh::SpriteNode>(backgroundImage);
+	m_background->setName("Background");
+	m_background->setOrigin(0.5f, 0.5f);
+	m_background->setPosition(bgPosX, bgPosY);
+	addChild(m_background);
 
 	nlohmann::json jsonCheckpoints = jsonFile["checkpoints"];
 	if(!jsonCheckpoints.is_array())
 	{
-		std::cout << "Level file either does not include 'checkpoint' entry of it is not an array";
+		std::cout << "Level file either does not include a 'checkpoint' entry of it is not an array";
 		return;
 	}
 	if(jsonCheckpoints.is_array())
@@ -275,6 +231,97 @@ void MainGameScene::LoadLevel(const std::string& fileName)
 			point->PlaceCeckpoint(sf::Vector2f(x, y));
 			addChild(point);
 			checkpoints.push_back(point);
+		}
+	}
+	gbh::PhysicsMaterial asteroidMat;//create a physics material for the asteroids
+	nlohmann::json jsAsteroids = jsonFile["Asteroids"];
+	if(!jsAsteroids.is_array())
+	{
+		std::cout << "Level file either does not include a 'Asteroids' entry or it is not an array.";
+		return;
+	}
+	if(jsAsteroids.is_array())
+	{
+		for(int i = 0; i<jsAsteroids.size();i++)
+		{
+			std::string imagepath = jsAsteroids[i]["image"].get<std::string>();
+			float xpos = jsAsteroids[i]["x"].get<float>();
+			float ypos = jsAsteroids[i]["y"].get<float>();
+			std::string type  = jsAsteroids[i]["type"].get<std::string>();
+			float size = jsAsteroids[i]["size"].get<float>();
+
+			std::shared_ptr<Asteroid> ast = std::make_shared<Asteroid>(imagepath);
+			if(type =="Big")
+			{
+				asteroidMat.density = 300;
+			}
+			if (type == "Medium")
+			{
+				asteroidMat.density = 200;
+			}
+			if(type == "Small")
+			{
+				asteroidMat.density = 100;
+			}
+			ast->setPhysicsBody(getPhysicsWorld()->createCircle(size, asteroidMat));
+			ast->SetUpAsteroid(sf::Vector2f(xpos, ypos));
+			addChild(ast);
+			rotatingObstacles.push_back(ast);
+		}
+	}
+	nlohmann::json startPosition = jsonFile["PlayerPosition"];
+	float plX = startPosition["playerX"].get<float>();
+	float plY = startPosition["playerY"].get<float>();
+	
+	m_player = std::make_shared<gbh::SpriteNode>(KPlayerShip);
+	m_player->setName("Player");
+	m_player->setOrigin(0.5, 0.5);
+	m_player->setPosition(plX, plY);
+	m_player->setScale(0.5, -0.5);
+	m_player->rotate(180);
+	//Physics for player ship added
+	sf::Vector2f shipsize = sf::Vector2f(55.0f, 102.0f);
+	m_player->setPhysicsBody(getPhysicsWorld()->createBox(shipsize * 0.5f));
+	m_player->getPhysicsBody()->setType(gbh::PhysicsBodyType::Dynamic);
+	m_player->getPhysicsBody()->setLinearDamping(3.0f);
+	m_player->getPhysicsBody()->setFixedRotation(true);
+	addChild(m_player);
+
+	nlohmann::json cameraVariable = jsonFile["CameraVariable"];
+	float camerastartX = cameraVariable["cameraX"].get<float>();
+	float cameraStartY = cameraVariable["cameraY"].get<float>();
+	float trackingX = cameraVariable["trackingX"].get<float>();
+	float trackingY = cameraVariable["trackingY"].get<float>();
+
+	m_MainCamera = std::make_shared<FollowCameraNode>();
+	m_MainCamera->SetTarget(m_player);
+	m_MainCamera->setPosition(camerastartX, cameraStartY);
+	addChild(m_MainCamera);
+	setCamera(m_MainCamera);
+	m_MainCamera->SetTrackingArea(trackingX, trackingY);
+	m_MainCamera->SetSpeed(2);
+}
+void MainGameScene::UpdateMyTimer(double deltaTime)
+{
+	if(!m_courseFinished)
+	{
+		m_playTime += deltaTime;
+		m_timerText->setString(std::to_string(m_playTime));
+	}
+}
+void MainGameScene::EndGame()
+{
+	if(m_courseFinished)
+	{
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		{
+			currentCheckPoint = -1;
+			m_playTime = 0;
+			m_timerText->setString("0");
+			m_courseFinished = false;
+			checkpoints.clear();
+			getOverlay().removeChild(1,true);
+			gbh::Game::getInstance().changeScene("title");
 		}
 	}
 }
