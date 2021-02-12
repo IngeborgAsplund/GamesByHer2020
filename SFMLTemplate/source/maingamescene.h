@@ -39,5 +39,6 @@ private:
 	void AdvanceCheckpoints();
 	void CheckRaceCourseState();//function that count the number of activated checkpoints and
 	void UpdateMyTimer(double deltaTime);
+	void HandleOverlay(bool showOverlay);
 	void EndGame();//when we have reached all of the checkpoints we can press space to return to the title scene
 };

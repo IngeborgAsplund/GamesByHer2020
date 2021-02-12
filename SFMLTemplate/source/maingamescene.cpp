@@ -16,13 +16,14 @@
 //definition of used assets
 const std::string kMainMusic = "../assets/music/titlescreen.ogg";
 const std::string kMainGameFont = "../assets/fonts/roboto-regular.ttf";
+const std::string kBackGround = "../assets/gfx/starfield-01.png";
 //Asteroids/obstacles
 const std::string kBigAsteroid = "../assets/gfx/asteroid-large-01.png";
 const std::string kMediumAsteroid01 = "../assets/gfx/asteroid-medium-01.png";
 const std::string kMediumAsteroid02 = "../assets/gfx/asteroid-medium-02.png";
 const std::string kMediumAsteroid03 = "../assets/gfx/asteroid-medium-03.png";
 const std::string kSmallAsteroid01 = "../assets/gfx/asteroid-small-01.png";
-const std::string kSmallAsteroid02 = "../assets/gfx/asterod-small-02";
+const std::string kSmallAsteroid02 = "../assets/gfx/asteroid-small-02.png";
 //checkpoint art
 const std::string kCheckpoint = "../assets/gfx/checkpoint.png";
 //player character art
@@ -32,7 +33,7 @@ void MainGameScene::onInitializeScene()
 {
 	//load the font we want to use
 	m_robotoFont.loadFromFile(kMainGameFont);
-	m_mainMusic.openFromFile(kMainMusic);
+	/*m_mainMusic.openFromFile(kMainMusic);*/
 	//create the physics world
 	Scene::createPhysicsWorld(sf::Vector2f(0.0f,0.0f));		
 }
@@ -116,11 +117,7 @@ void MainGameScene::CheckRaceCourseState()
 	if(reachedCheckpoints==checkpoints.size())
 	{
 		m_courseFinished = true;
-		std::shared_ptr<gbh::TextNode> endText = std::make_shared<gbh::TextNode>("Press space to return to menue", m_robotoFont, 50);
-		endText->setOrigin(0.5, 0.5);
-		endText->setPosition(500, 500);
-		endText->setName("GameOver");
-		getOverlay().addChild(endText);
+		HandleOverlay(true);
 	}
 }
 void MainGameScene::captureInput() 
@@ -205,6 +202,9 @@ void MainGameScene::LoadLevel(const std::string& fileName)
 	addChild(m_boudnaries);
 	//bg image
 	nlohmann::json jsBackground = jsonFile["BackgroundImage"];
+
+	if(jsBackground!=NULL)
+	{
 	const std::string backgroundImage = jsBackground["imagefile"].get<std::string>();
 	float bgPosX = jsBackground["posX"].get<float>();
 	float bgPosY = jsBackground["posY"].get<float>();
@@ -213,6 +213,27 @@ void MainGameScene::LoadLevel(const std::string& fileName)
 	m_background->setOrigin(0.5f, 0.5f);
 	m_background->setPosition(bgPosX, bgPosY);
 	addChild(m_background);
+	}
+	else if(jsBackground==NULL)
+	{		
+		std::shared_ptr<gbh::SpriteNode> m_background = std::make_shared<gbh::SpriteNode>(kBackGround);
+		m_background->setName("Background");
+		m_background->setOrigin(0.5f, 0.5f);
+		m_background->setPosition(260,-200);
+		addChild(m_background);
+	}
+	//music loading
+	nlohmann::json jsMusic = jsonFile["Music"];
+
+	if(jsMusic!=NULL)
+	{
+		const std::string music = jsMusic["path"].get< const std::string>();
+		m_mainMusic.openFromFile(music);
+	}
+	else if(jsMusic==NULL)
+	{
+		m_mainMusic.openFromFile(kMainMusic);
+	}
 
 	nlohmann::json jsonCheckpoints = jsonFile["checkpoints"];
 	if(!jsonCheckpoints.is_array())
@@ -253,15 +274,15 @@ void MainGameScene::LoadLevel(const std::string& fileName)
 			std::shared_ptr<Asteroid> ast = std::make_shared<Asteroid>(imagepath);
 			if(type =="Big")
 			{
-				asteroidMat.density = 300;
+				asteroidMat.density = 3000;
 			}
 			if (type == "Medium")
 			{
-				asteroidMat.density = 200;
+				asteroidMat.density = 2000;
 			}
 			if(type == "Small")
 			{
-				asteroidMat.density = 100;
+				asteroidMat.density = 1000;
 			}
 			ast->setPhysicsBody(getPhysicsWorld()->createCircle(size, asteroidMat));
 			ast->SetUpAsteroid(sf::Vector2f(xpos, ypos));
@@ -300,6 +321,8 @@ void MainGameScene::LoadLevel(const std::string& fileName)
 	setCamera(m_MainCamera);
 	m_MainCamera->SetTrackingArea(trackingX, trackingY);
 	m_MainCamera->SetSpeed(2);
+
+	
 }
 void MainGameScene::UpdateMyTimer(double deltaTime)
 {
@@ -307,6 +330,34 @@ void MainGameScene::UpdateMyTimer(double deltaTime)
 	{
 		m_playTime += deltaTime;
 		m_timerText->setString(std::to_string(m_playTime));
+	}
+}
+void MainGameScene::HandleOverlay(bool showOverlay)
+{
+	if(showOverlay)
+	{
+		std::shared_ptr<gbh::TextNode> instruction = std::make_shared<gbh::TextNode>("Press space to return to menue", m_robotoFont, 50);
+		instruction->setName("PressSpace");
+		instruction->setOrigin(0.5, 0.5);
+		instruction->setPosition(500, 400);
+		getOverlay().addChild(instruction);
+
+		std::shared_ptr<gbh::TextNode> winText= std::make_shared<gbh::TextNode>("Course Finished", m_robotoFont, 80);
+		winText->setName("YouWon");
+		winText->setOrigin(0.5, 0.5);
+		winText->setPosition(500, 200);
+		getOverlay().addChild(winText);
+
+
+		m_timerText->setPosition(500,600);
+	}
+	else if(!showOverlay)
+	{
+		for(int i = 0;i<2;i++)
+		{
+			getOverlay().removeChild(1, true);
+		}
+		m_timerText->setPosition(1270, 700);
 	}
 }
 void MainGameScene::EndGame()
@@ -320,7 +371,7 @@ void MainGameScene::EndGame()
 			m_timerText->setString("0");
 			m_courseFinished = false;
 			checkpoints.clear();
-			getOverlay().removeChild(1,true);
+			HandleOverlay(false);
 			gbh::Game::getInstance().changeScene("title");
 		}
 	}
