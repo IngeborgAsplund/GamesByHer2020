@@ -83,7 +83,7 @@ void TitleScene::onMouseEvent(sf::Event& event)
 			//check if the node we clicked on is the startbutton and in that case start the main game.
 			if(node->getName()=="StartButton")
 			{
-				gbh::Game::getInstance().changeScene("maingame");
+				gbh::Game::getInstance().changeScene("levelSelection");
 			}
 			if (node->getName() == "Credits")
 			{

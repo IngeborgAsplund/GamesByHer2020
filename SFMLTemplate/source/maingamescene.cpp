@@ -33,9 +33,14 @@ void MainGameScene::onInitializeScene()
 {
 	//load the font we want to use
 	m_robotoFont.loadFromFile(kMainGameFont);
-	/*m_mainMusic.openFromFile(kMainMusic);*/
 	//create the physics world
-	Scene::createPhysicsWorld(sf::Vector2f(0.0f,0.0f));		
+	Scene::createPhysicsWorld(sf::Vector2f(0.0f,0.0f));	
+	m_levelToLoad = "../assets/Levels/level1.json";
+}
+//setter function for the level to load string, which are then used to load our level
+void MainGameScene::SetLevelToLoad(const std::string& level)
+{
+	m_levelToLoad = level;
 }
 void MainGameScene:: onUpdate(double deltaTime)
 {
@@ -45,7 +50,7 @@ void MainGameScene:: onUpdate(double deltaTime)
 }
 void MainGameScene::onShowScene()
 {
-	LoadLevel("../assets/Levels/level1.json");
+	LoadLevel(m_levelToLoad);
 	m_timerText = std::make_shared<gbh::TextNode>("0",m_robotoFont,40);
 	m_timerText->setOrigin(1, 1);
 	m_timerText->setPosition(1270, 700);
@@ -329,7 +334,9 @@ void MainGameScene::UpdateMyTimer(double deltaTime)
 	if(!m_courseFinished)
 	{
 		m_playTime += deltaTime;
-		m_timerText->setString(std::to_string(m_playTime));
+		char buffer[32];
+		sprintf(buffer, "%.2f", m_playTime);
+		m_timerText->setString(buffer);
 	}
 }
 void MainGameScene::HandleOverlay(bool showOverlay)

@@ -203,6 +203,48 @@
             "y":-500,
             "type":"Big",
             "size":80
+        },
+        {
+            "image":"../assets/gfx/asteroid-medium-01.png",
+            "x":100,
+            "y":-300,
+            "type":"Medium",
+            "size":40
+        },
+        {
+            "image":"../assets/gfx/asteroid-small-01.png",
+            "x":320,
+            "y":-250,
+            "type":"Small",
+            "size":20 
+        },
+        {
+            "image":"../assets/gfx/asteroid-medium-02.png",
+            "x":290,
+            "y":-150,
+            "type":"Medium",
+            "size":50
+        },
+        {
+            "image":"../assets/gfx/asteroid-medium-03.png",
+            "x":-100,
+            "y":20,
+            "type":"Medium",
+            "size":40
+        },
+        {
+            "image":"../assets/gfx/asteroid-large-01.png",
+            "x":-360,
+            "y":200,
+            "type":"Big",
+            "size":80
+        },
+        {
+            "image":"../assets/gfx/asteroid-medium-03.png",
+            "x":0,
+            "y":300,
+            "type":"Medium",
+            "size":30
         }
     ],
     "PlayerPosition":
