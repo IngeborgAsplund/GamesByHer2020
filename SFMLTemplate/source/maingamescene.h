@@ -15,12 +15,9 @@ protected:
 	virtual void onHideScene();
 	virtual void onKeyboardEvent(sf::Event & event)override;
 	void onBeginPhysicsContact(const gbh::PhysicsContact& contact)override;
-public:
-	void SetLevelToLoad(const std::string& level);//set the value of m_leveltoLoad
 private:
 	sf::Font m_robotoFont;
 	sf::Music m_mainMusic;
-	std::string m_levelToLoad;
 	//physics related variables
 	float accelration = 2000.0f;
 	sf::Vector2f moveForce = sf::Vector2f(0.0f, 0.0f);	

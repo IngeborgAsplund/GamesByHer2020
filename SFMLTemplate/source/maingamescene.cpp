@@ -35,13 +35,8 @@ void MainGameScene::onInitializeScene()
 	m_robotoFont.loadFromFile(kMainGameFont);
 	//create the physics world
 	Scene::createPhysicsWorld(sf::Vector2f(0.0f,0.0f));	
-	m_levelToLoad = "../assets/Levels/level1.json";
 }
-//setter function for the level to load string, which are then used to load our level
-void MainGameScene::SetLevelToLoad(const std::string& level)
-{
-	m_levelToLoad = level;
-}
+
 void MainGameScene:: onUpdate(double deltaTime)
 {
 	captureInput();
@@ -50,7 +45,7 @@ void MainGameScene:: onUpdate(double deltaTime)
 }
 void MainGameScene::onShowScene()
 {
-	LoadLevel(m_levelToLoad);
+	LoadLevel(gbh::Game::getInstance().gLevel);
 	m_timerText = std::make_shared<gbh::TextNode>("0",m_robotoFont,40);
 	m_timerText->setOrigin(1, 1);
 	m_timerText->setPosition(1270, 700);
@@ -201,6 +196,7 @@ void MainGameScene::LoadLevel(const std::string& fileName)
 	float yPos = jsWorldBoundary["placementY"].get<float>();
 
 	std::shared_ptr<gbh::Node> m_boudnaries = std::make_shared<gbh::Node>();//node that will hold the boundaries for the world
+	m_boudnaries->setName("boundaries");
 	m_boudnaries->setPhysicsBody(getPhysicsWorld()->createEdgeBox(sf::Vector2(xSize,ySize)));
 	m_boudnaries->getPhysicsBody()->setType(gbh::PhysicsBodyType::Static);
 	m_boudnaries->setPosition(xPos,yPos);
@@ -378,6 +374,10 @@ void MainGameScene::EndGame()
 			m_timerText->setString("0");
 			m_courseFinished = false;
 			checkpoints.clear();
+			this->removeChildrenWithName("boundaries", true);
+			this->removeChildrenWithName("Background", true);
+			this->removeChildrenWithName("checkPoint", true);
+			this->removeChildrenWithName("asteroid", true);
 			HandleOverlay(false);
 			gbh::Game::getInstance().changeScene("title");
 		}
