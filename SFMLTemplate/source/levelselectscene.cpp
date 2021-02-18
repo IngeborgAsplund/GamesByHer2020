@@ -2,6 +2,7 @@
 #include"sfml-engine/game.h"
 #include "sfml-engine/spritenode.h"
 #include"maingamescene.h"
+#include"gamestate.h";
 #include"levelselectscene.h"
 const std::string kSelectionMusic = "../assets/music/titlescreen.ogg";
 const std::string kSelectionScreenBackground = "../assets/gfx/starfield-01.png";
@@ -11,26 +12,18 @@ const std::string kLevel2Button = "../assets/gfx/Level2_Button.png";
 void LevelSelectScene::onInitializeScene()
 {
 	m_selectscreenMusic.openFromFile(kSelectionMusic);
+	FillLists();
+
 	std::shared_ptr<gbh::SpriteNode> background = std::make_shared<gbh::SpriteNode>(kSelectionScreenBackground);
 	background->setName("Bg");
 	background->setPosition(900, 800);
-	addChild(background);
+	addChild(background);	
 
-	std::shared_ptr<gbh::SpriteNode>level1= std::make_shared<gbh::SpriteNode>(kLevel1Button);
-	level1->setName("level1_Button");
-	level1->setOrigin(0.5, 0.5);
-	level1->setPosition(300,100);
-	addChild(level1);
-
-	std::shared_ptr<gbh::SpriteNode> level2 = std::make_shared<gbh::SpriteNode>(kLevel2Button);
-	level2->setName("level2_Button");
-	level2->setOrigin(0.5, 0.5);
-	level2->setPosition(300,200);
-	addChild(level2);
 }
 void LevelSelectScene::onShowScene()
 {
 	m_selectscreenMusic.play();
+	CreateButtons();
 }
 void LevelSelectScene::onHideScene()
 {
@@ -39,19 +32,36 @@ void LevelSelectScene::onHideScene()
 ///Logic for determining which of the levels we wished to load
 void LevelSelectScene::onMouseEvent(sf::Event& event)
 {
-	std::shared_ptr<gbh::Node> hit = this->getNodeAtViewPoint((float)event.mouseButton.x, (float)event.mouseButton.y);
+	std::shared_ptr<gbh::Node> node = this->getNodeAtViewPoint((float)event.mouseButton.x, (float)event.mouseButton.y);
 	
-	if(hit)
+	if(node)
 	{
-		if (hit->getName() == "level1_Button")
+		if(node->getName().length()>4)
 		{
-			gbh::Game::getInstance().gLevel = "../assets/Levels/level1.json";
-			gbh::Game::getInstance().changeScene("maingame");
+			if(node->getName().substr(0,2)=="->")
+			{
+				std::string level = node->getName().substr(2);
+				GameState::getInstance().selectedLevel = level;
+				gbh::Game::getInstance().changeScene("maingame");
+			}
 		}
-		if(hit->getName()=="level2_Button")
-		{
-			gbh::Game::getInstance().gLevel = "../assets/Levels/level2.json";
-			gbh::Game::getInstance().changeScene("maingame");
-		}
+	}
+}
+void LevelSelectScene::FillLists()
+{
+	levels.push_back("../assets/Levels/level1.json");
+	levels.push_back("../assets/Levels/level2.json");
+
+	buttonGraphics.push_back("../assets/gfx/Level1_Button.png");
+	buttonGraphics.push_back("../assets/gfx/Level2_Button.png");
+}
+void LevelSelectScene::CreateButtons()
+{
+	for(int i = 0; i<levels.size();i++)
+	{
+		std::shared_ptr<gbh::SpriteNode> button = std::make_shared<gbh::SpriteNode>(buttonGraphics[i]);
+		button->setName("->" + levels[i]);
+		button->setPosition(640.0f, 240 + 80 * i);
+		addChild(button);
 	}
 }

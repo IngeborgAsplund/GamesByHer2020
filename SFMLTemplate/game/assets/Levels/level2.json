@@ -16,6 +16,63 @@
     {
         "path":"../assets/music/maingame.ogg"
     },
+    "Objects":
+    {       
+        "asteroid-large-01":
+        {
+            "image":"../assets/gfx/asteroid-large-01.png",
+            "Body":
+            {
+                "type":"Big",
+                "radius":80
+            }
+        },
+        "asteroid-medium-01":
+        {
+            "image":"../assets/gfx/asteroid-medium-01.png",
+            "Body":
+            {
+                "type":"Medium",
+                "radius":40
+            }
+        },
+        "asteroid-medium-02":
+        {
+            "image":"../assets/gfx/asteroid-medium-02.png",
+            "Body":
+            {
+                "type":"Medium",
+                "radius":50
+            }
+        },
+        "asteroid-medium-03":
+        {
+            "image":"../assets/gfx/asteroid-medium-03.png",
+            "Body":
+            {
+                "type":"Medium",
+                "radius":40
+            }
+        },
+        "asteroid-small-01":
+        {
+            "image":"../assets/gfx/asteroid-small-01.png",
+            "Body":
+            {
+                "type":"Small",
+                "radius":20
+            }
+        },
+        "asteroid-small-02":
+        {
+            "image":"../assets/gfx/asteroid-small-02.png",
+            "Body":
+            {
+                "type":"Small",
+                "radius":10
+            }
+        }
+    },
     "checkpoints":
     [
         {
@@ -96,168 +153,122 @@
         }
         
     ],
-    "Asteroids":
+    "Actors":
     [
         {
-            "image":"../assets/gfx/asteroid-medium-02.png",
+            "object":"asteroid-medium-02",           
             "x":590,
-            "y":300,
-            "type":"Medium",
-            "size":50
+            "y":300
         },
         {
-            "image":"../assets/gfx/asteroid-medium-01.png",
+            "object":"asteroid-medium-01",            
             "x":860,
-            "y":330,
-            "type":"Medium",
-            "size":40
+            "y":330
         },
         {
-            "image":"../assets/gfx/asteroid-medium-03.png",
+            "object":"asteroid-medium-03",
             "x":790,
-            "y":190,
-            "type":"Medium",
-            "size":40
+            "y":190
         },
         {
-            "image":"../assets/gfx/asteroid-small-02.png",
+            "object":"asteroid-small-02",          
             "x":940,
-            "y":230,
-            "type":"Small",
-            "size":10
+            "y":230
         },
         {
-            "image":"../assets/gfx/asteroid-small-01.png",
+            "object":"asteroid-small-01",            
             "x":530,
-            "y":200,
-            "type":"Small",
-            "size":20
+            "y":200
         },
         {
-            "image":"../assets/gfx/asteroid-large-01.png",
+            "object":"asteroid-large-01",
             "x":300,
-            "y":100,
-            "type":"Big",
-            "size":80
+            "y":100
         },
         {
-            "image":"../assets/gfx/asteroid-medium-02.png",
+            "object":"asteroid-medium-02",          
             "x":700,
-            "y":0,
-            "type":"Medium",
-            "size":50
+            "y":0
         },
         {
-            "image":"../assets/gfx/asteroid-medium-03.png",
+            "object":"asteroid-medium-03",           
             "x":950,
-            "y":50,
-            "type":"Medium",
-            "size":40
+            "y":50         
         },
         {
-            "image":"../assets/gfx/asteroid-large-01.png",
+            "object":"asteroid-large-01",
             "x":350,
-            "y":-300,
-            "type":"Medium",
-            "size":80
+            "y":-300
         },
         {
-            "image":"../assets/gfx/asteroid-small-01.png",
+            "object":"asteroid-small-01",
             "x":700,
-            "y":-306,
-            "type":"Small",
-            "size":20
+            "y":-306
         },
         {
-            "image":"../assets/gfx/asteroid-medium-01.png",
+            "object":"asteroid-medium-01",
             "x":550,
-            "y":-460,
-            "type":"Medium",
-            "size":40
+            "y":-460
         },
         {
-            "image":"../assets/gfx/asteroid-medium-02.png",
+            "object":"asteroid-medium-02",
             "x":870,
-            "y":-350,
-            "type":"Medium",
-            "size":50
+            "y":-350
         },
         {
-            "image":"../assets/gfx/asteroid-small-01.png",
+            "object":"asteroid-small-01",
             "x":500,
-            "y":-750,
-            "type":"Small",
-            "size":20 
+            "y":-750
         },
         {
-            "image":"../assets/gfx/asteroid-medium-02.png",
+            "object":"asteroid-medium-02",
             "x":750,
-            "y":-700,
-            "type":"Medium",
-            "size":50
+            "y":-700
         },
         {
-            "image":"../assets/gfx/asteroid-medium-03.png",
+            "object":"asteroid-medium-03",
             "x":930,
-            "y":-860,
-            "type":"Medium",
-            "size":40
+            "y":-860
         },
         {
-            "image":"../assets/gfx/asteroid-small-02.png",
+            "object":"asteroid-small-02",
             "x":990,
-            "y":-700,
-            "type":"Small",
-            "size":10
+            "y":-700
         },
         {
-            "image":"../assets/gfx/asteroid-large-01.png",
+            "object":"asteroid-large-01",
             "x":-200,
-            "y":-450,
-            "type":"Big",
-            "size":80
+            "y":-450
         },
         {
-            "image":"../assets/gfx/asteroid-medium-02.png",
+            "object":"asteroid-medium-02",
             "x":100,
-            "y":-600,
-            "type":"Medium",
-            "size":50
+            "y":-600
         },
         {
-            "image":"../assets/gfx/asteroid-small-01.png",
+            "object":"asteroid-small-01",
             "x":20,
-            "y":-440,
-            "type":"Small",
-            "size":20
+            "y":-440
         },
         {
-            "image":"../assets/gfx/asteroid-small-02.png",
+            "object":"asteroid-small-02",
             "x":-10,
-            "y":-530,
-            "type":"Small",
-            "size":10
+            "y":-530
         },
         {
-            "image":"../assets/gfx/asteroid-medium-01.png",
+            "object":"asteroid-medium-01",
             "x":-100,
-            "y":-200,
-            "type":"Medium",
-            "size":40
+            "y":-200
         },
         {
-            "image":"../assets/gfx/asteroid-medium-03.png",
+            "object":"asteroid-medium-03",
             "x":200,
-            "y":-100,
-            "type":"Medium",
-            "size":40
+            "y":-100
         },
         {
-            "image":"../assets/gfx/asteroid-small-02.png",
+            "object":"asteroid-small-02",           
             "x":-200,
-            "y":-300,
-            "type":"Small",
-            "size":10
+            "y":-300
         }
        
     ],

@@ -1,5 +1,6 @@
 //include headerfile for this scriptfile
 #include"asteroid.h"
+#include "gamestate.h"
 #include"maingamescene.h"
 //include of standard c++ libraries
 #include<fstream>
@@ -33,19 +34,19 @@ void MainGameScene::onInitializeScene()
 {
 	//load the font we want to use
 	m_robotoFont.loadFromFile(kMainGameFont);
-	//create the physics world
-	Scene::createPhysicsWorld(sf::Vector2f(0.0f,0.0f));	
 }
 
 void MainGameScene:: onUpdate(double deltaTime)
-{
+{	
 	captureInput();
 	RotateObstacles();
 	UpdateMyTimer(deltaTime);
 }
 void MainGameScene::onShowScene()
 {
-	LoadLevel(gbh::Game::getInstance().gLevel);
+	//create the physics world
+	Scene::createPhysicsWorld(sf::Vector2f(0.0f, 0.0f));
+	LoadLevel(GameState::getInstance().selectedLevel);
 	m_timerText = std::make_shared<gbh::TextNode>("0",m_robotoFont,40);
 	m_timerText->setOrigin(1, 1);
 	m_timerText->setPosition(1270, 700);
@@ -57,6 +58,7 @@ void MainGameScene::onHideScene()
 {
 	m_mainMusic.stop();
 	setDrawPhysicsDebug(false);
+	removeAllChildren(true);
 }
 void MainGameScene::onKeyboardEvent(sf::Event& event)
 {
@@ -255,40 +257,44 @@ void MainGameScene::LoadLevel(const std::string& fileName)
 			checkpoints.push_back(point);
 		}
 	}
+	nlohmann::json objects = jsonFile["Objects"];
+	nlohmann::json jsActors = jsonFile["Actors"];
 	gbh::PhysicsMaterial asteroidMat;//create a physics material for the asteroids
-	nlohmann::json jsAsteroids = jsonFile["Asteroids"];
-	if(!jsAsteroids.is_array())
+	if(objects.is_object()&&jsActors.is_array())
 	{
-		std::cout << "Level file either does not include a 'Asteroids' entry or it is not an array.";
-		return;
-	}
-	if(jsAsteroids.is_array())
-	{
-		for(int i = 0; i<jsAsteroids.size();i++)
+		for(int i = 0; i<jsActors.size();i++)
 		{
-			std::string imagepath = jsAsteroids[i]["image"].get<std::string>();
-			float xpos = jsAsteroids[i]["x"].get<float>();
-			float ypos = jsAsteroids[i]["y"].get<float>();
-			std::string type  = jsAsteroids[i]["type"].get<std::string>();
-			float size = jsAsteroids[i]["size"].get<float>();
+			nlohmann::json asteroid = jsActors[i];
+			nlohmann::json object = objects[asteroid["object"].get<std::string>()];
 
-			std::shared_ptr<Asteroid> ast = std::make_shared<Asteroid>(imagepath);
-			if(type =="Big")
+			if(object.is_object())
 			{
-				asteroidMat.density = 3000;
+				std::string imagepath = object["image"].get<std::string>();
+				std::string type = object["Body"]["type"].get<std::string>();
+				float size = object["Body"]["radius"].get<float>();
+				float xpos = jsActors[i]["x"].get<float>();
+				float ypos = jsActors[i]["y"].get<float>();
+
+				std::shared_ptr<Asteroid> ast = std::make_shared<Asteroid>(imagepath);
+				if (type == "Big")
+				{
+					asteroidMat.density = 3000;
+				}
+				if (type == "Medium")
+				{
+					asteroidMat.density = 2000;
+				}
+				if (type == "Small")
+				{
+					asteroidMat.density = 1000;
+				}
+				ast->setPhysicsBody(getPhysicsWorld()->createCircle(size, asteroidMat));
+				ast->SetUpAsteroid(sf::Vector2f(xpos, ypos));
+				addChild(ast);
+				rotatingObstacles.push_back(ast);
 			}
-			if (type == "Medium")
-			{
-				asteroidMat.density = 2000;
-			}
-			if(type == "Small")
-			{
-				asteroidMat.density = 1000;
-			}
-			ast->setPhysicsBody(getPhysicsWorld()->createCircle(size, asteroidMat));
-			ast->SetUpAsteroid(sf::Vector2f(xpos, ypos));
-			addChild(ast);
-			rotatingObstacles.push_back(ast);
+
+			
 		}
 	}
 	nlohmann::json startPosition = jsonFile["PlayerPosition"];
@@ -356,10 +362,7 @@ void MainGameScene::HandleOverlay(bool showOverlay)
 	}
 	else if(!showOverlay)
 	{
-		for(int i = 0;i<2;i++)
-		{
-			getOverlay().removeChild(1, true);
-		}
+		getOverlay().removeAllChildren(true);
 		m_timerText->setPosition(1270, 700);
 	}
 }
@@ -374,10 +377,6 @@ void MainGameScene::EndGame()
 			m_timerText->setString("0");
 			m_courseFinished = false;
 			checkpoints.clear();
-			this->removeChildrenWithName("boundaries", true);
-			this->removeChildrenWithName("Background", true);
-			this->removeChildrenWithName("checkPoint", true);
-			this->removeChildrenWithName("asteroid", true);
 			HandleOverlay(false);
 			gbh::Game::getInstance().changeScene("title");
 		}
