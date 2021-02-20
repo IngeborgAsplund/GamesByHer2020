@@ -1,4 +1,5 @@
 #pragma once
+#include"aiShip.h"
 #include "checkpoint.h"
 #include "followcameranode.h"
 #include "sfml-engine/scene.h"
@@ -26,6 +27,7 @@ private:
 	std::vector<std::shared_ptr<gbh::Node>> rotatingObstacles;
 	std::shared_ptr<FollowCameraNode> m_MainCamera;
 	std::shared_ptr<gbh::SpriteNode> m_player;
+	std::shared_ptr<AiControlledShip> m_competetitor;
 	//checkpoint related variables
 	int currentCheckPoint = -1;
 	std::vector<std::shared_ptr<CheckPoint>> checkpoints;
@@ -51,6 +53,7 @@ private:
 	void LoadCeckpoints(nlohmann::json& inJSon);
 	void LoadActors(nlohmann::json& inJSon);
 	void LoadPlayer(nlohmann::json& inJSon);
+	void LoadEnemySip(nlohmann::json& inJSon);
 	void LoadCamera(nlohmann::json& inJSon);
 
 

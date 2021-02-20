@@ -1,4 +1,5 @@
 #pragma once
+#include<string>
 #include "sfml-engine/spritenode.h"
 #include "sfml-engine/physics/physicsbody.h"
 #include "sfml-engine/physics/physicscontact.h"

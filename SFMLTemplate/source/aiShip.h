@@ -5,19 +5,21 @@
 
 #include"checkpoint.h"
 
-class AiControlledShip:public gbh::SpriteNode
+class AiControlledShip: public gbh::SpriteNode
 {	
 public:
+	AiControlledShip(const std::string fileName);
 	void MoveTowerds();
 	void AssignListOfCheckpoints(std::vector<std::shared_ptr<CheckPoint>> inCheckpoint);
+	void FindNewCeckPoint();
 private:
 	//variables
 	std::shared_ptr<CheckPoint> currentCheckpoint;
 	sf::Vector2f direction;
-    float speed = 4.0f;//speed we use as force for the enemy ship/agent
+    float speed = 1500.0f;//speed we use as force for the enemy ship/agent
 	int checkIndex = -1;
 	bool reached = false;
 	std::vector<std::shared_ptr<CheckPoint>> checkpointsInScene;
 	//functions
-	void FindNewCeckPoint();
+	
 };

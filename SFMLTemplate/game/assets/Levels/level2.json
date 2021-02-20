@@ -300,6 +300,11 @@
         "playerX":840,
         "playerY":500
     },
+    "OpponentPosition":
+    {
+        "x":890,
+        "y":500
+    },
     "CameraVariable":
     {
         "cameraX":650,

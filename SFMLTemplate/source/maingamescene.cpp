@@ -32,6 +32,8 @@ const std::string kSmallAsteroid02 = "../assets/gfx/asteroid-small-02.png";
 const std::string kCheckpoint = "../assets/gfx/checkpoint.png";
 //player character art
 const std::string KPlayerShip = "../assets/gfx/player-ship.png";
+//competitior art
+const std::string kComptetitor = "../assets/gfx/enemy-drone.png";
 //On initialize scene method.
 void MainGameScene::onInitializeScene()
 {
@@ -44,12 +46,20 @@ void MainGameScene:: onUpdate(double deltaTime)
 	captureInput();
 	RotateObstacles();
 	UpdateMyTimer(deltaTime);
+	if(m_competetitor!=nullptr)
+	{
+		m_competetitor->MoveTowerds();
+	}
 }
 void MainGameScene::onShowScene()
 {
 	//create the physics world
 	Scene::createPhysicsWorld(sf::Vector2f(0.0f, 0.0f));
 	LoadLevel(GameState::getInstance().selectedLevel);
+	if(m_competetitor!=nullptr)
+	{
+		m_competetitor->AssignListOfCheckpoints(checkpoints);
+	}
 	m_timerText = std::make_shared<gbh::TextNode>("0",m_robotoFont,40);
 	m_timerText->setOrigin(1, 1);
 	m_timerText->setPosition(1270, 700);
@@ -76,12 +86,21 @@ void MainGameScene::onBeginPhysicsContact(const gbh::PhysicsContact& contact)
 {
 	//get the reference to the player character
 	gbh::Node* player = m_player.get();
+	gbh::Node* competitor = m_competetitor.get();
 	if(contact.containsNode(player))
 	{
 		gbh::Node* otherNode = contact.otherNode(player);
 		if(otherNode->getName()=="checkPoint")
 		{
 			AdvanceCheckpoints();
+		}
+	}
+	else if(contact.containsNode(competitor))
+	{
+		gbh::Node* otherNode = contact.otherNode(competitor);
+		if(otherNode->getName()== "checkPoint")
+		{			
+			m_competetitor->FindNewCeckPoint();
 		}
 	}
 }
@@ -193,6 +212,7 @@ void MainGameScene::LoadLevel(const std::string& fileName)
 	LoadCeckpoints(jsonFile);
 	LoadActors(jsonFile);
 	LoadPlayer(jsonFile);
+	LoadEnemySip(jsonFile);
 	LoadCamera(jsonFile);
 	
 }
@@ -347,6 +367,30 @@ void MainGameScene::LoadPlayer(nlohmann::json& inJSon)
 	m_player->getPhysicsBody()->setLinearDamping(2.0f);
 	m_player->getPhysicsBody()->setFixedRotation(true);
 	addChild(m_player);
+}
+void MainGameScene::LoadEnemySip(nlohmann::json& inJSon)
+{
+	nlohmann::json enemyPosition = inJSon["OpponentPosition"];
+	if(enemyPosition!= NULL)
+	{
+		float enemyPosX = enemyPosition["x"].get<float>();
+		float enemyPosY = enemyPosition["y"].get<float>();
+
+		m_competetitor = std::make_shared<AiControlledShip>(kComptetitor);
+		m_competetitor->setOrigin(0.5, 0.5);
+		m_competetitor->setPosition(enemyPosX, enemyPosY);
+		m_competetitor->setScale(0.5, 0.5);
+
+		gbh::PhysicsMaterial compMat;
+		sf::Vector2f size = sf::Vector2f(40, 100);
+		compMat.density = 3;
+		m_competetitor->setPhysicsBody(getPhysicsWorld()->createEmptyBody());
+		m_competetitor->getPhysicsBody()->addBox(size * 0.5f, sf::Vector2f(), compMat);
+		m_competetitor->getPhysicsBody()->setType(gbh::PhysicsBodyType::Dynamic);
+		m_competetitor->getPhysicsBody()->setLinearDamping(2.0f);
+		m_competetitor->getPhysicsBody()->setFixedRotation(true);
+		addChild(m_competetitor);
+	}
 }
 void MainGameScene::LoadCamera(nlohmann::json& inJSon)
 {
