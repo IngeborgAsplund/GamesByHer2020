@@ -4,6 +4,8 @@
 #include "sfml-engine/scene.h"
 #include <SFML/Audio.hpp>
 
+#include "nlohmann/json.hpp"
+
 class MainGameScene :public gbh::Scene 
 {
 protected:
@@ -41,5 +43,15 @@ private:
 	void UpdateMyTimer(double deltaTime);
 	void HandleOverlay(bool showOverlay);
 	void EndGame();//when we have reached all of the checkpoints we can press space to return to the title scene
+
+	//setup functions used by the loadlevel function 
+	void LoadBoundaries(nlohmann::json& inJSon);
+	void LoadBackground(nlohmann::json& inJSon);
+	void LoadMusic(nlohmann::json& inJSon);
+	void LoadCeckpoints(nlohmann::json& inJSon);
+	void LoadActors(nlohmann::json& inJSon);
+	void LoadPlayer(nlohmann::json& inJSon);
+	void LoadCamera(nlohmann::json& inJSon);
+
 
 };

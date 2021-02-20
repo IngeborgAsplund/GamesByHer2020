@@ -19,4 +19,9 @@ private:
 	sf::Music m_titleMusic;
 	//functions
 	void RotateAsteroid();
+	void CreateBackground();
+	void CreateAsteroid();
+	void CreatePlayerShip();
+	void CreateUI();
+
 };

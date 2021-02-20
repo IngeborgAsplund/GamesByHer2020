@@ -145,117 +145,140 @@
         {
             "object":"asteroid-large-01",
             "x":480,
-            "y":300            
+            "y":300,
+            "randomVelocity":false            
         },
         {           
             "object":"asteroid-medium-01",
             "x":700,
-            "y":130           
+            "y":130,   
+            "randomVelocity":true        
         },
         {
             "object":"asteroid-medium-02",
             "x":550,
-            "y":-40            
+            "y":-40,  
+            "randomVelocity":false          
         },
         {
             "object":"asteroid-medium-03",
             "x":770,
-            "y":-170            
+            "y":-170, 
+            "randomVelocity":true           
         },
         {
            "object":"asteroid-small-01",
             "x":600,
-            "y":-140
+            "y":-140,
+            "randomVelocity":true
         },
         {
             "object":"asteroid-small-02",
             "x":550,
-            "y":-280
+            "y":-280,
+            "randomVelocity":true
         },
         {
             "object":"asteroid-medium-02",           
             "x":750,
-            "y":-380
+            "y":-380,
+            "randomVelocity":true
         },
         {
             "object":"asteroid-medium-03",
             "x":550,
-            "y":-480
+            "y":-480,
+            "randomVelocity":false
         },
         {
             "object":"asteroid-large-01",
             "x":1000,
-            "y":-550
+            "y":-550,
+            "randomVelocity":false
         },
         {
             "object":"asteroid-medium-02",
             "x":700,
-            "y":-660        
+            "y":-660, 
+            "randomVelocity":true       
         },
         {
             "object":"asteroid-small-02",
             "x":770,
-            "y":-750
+            "y":-750,
+            "randomVelocity":true
         },
         {
             "object":"asteroid-small-01",
             "x":900,
-            "y":-800
+            "y":-800,
+            "randomVelocity":true
         },
         {
             "object":"asteroid-medium-01",
             "x":600,
-            "y":-900
+            "y":-900,
+            "randomVelocity":false
         },
         {
             "object":"asteroid-medium-02",
             "x":900,
-            "y":-1000
+            "y":-1000,
+            "randomVelocity":true
         },
         {
             "object":"asteroid-small-01",
             "x":400,
-            "y":-900
+            "y":-900,
+            "randomVelocity":true
         },
         {
             "object":"asteroid-medium-03",
             "x": 430,
-            "y":-700
+            "y":-700,
+            "randomVelocity":false
         },
         {
             "object":"asteroid-large-01",
             "x":50,
-            "y":-500
+            "y":-500,
+            "randomVelocity":false
         },
         {
             "object":"asteroid-medium-01",
             "x":100,
-            "y":-300
+            "y":-300,
+            "randomVelocity":true
         },
         {
             "object":"asteroid-small-01",
             "x":320,
-            "y":-250         
+            "y":-250,
+            "randomVelocity":true         
         },
         {
             "object":"asteroid-medium-02",
             "x":290,
-            "y":-150
+            "y":-150,
+            "randomVelocity":false
         },
         {
             "object":"asteroid-medium-03",
             "x":-100,
-            "y":20
+            "y":20,
+            "randomVelocity":true
         },
         {
             "object":"asteroid-large-01",
             "x":-360,
-            "y":200
+            "y":200,
+            "randomVelocity":false
         },
         {
             "object":"asteroid-medium-03",
             "x":0,
-            "y":300
+            "y":300,
+            "randomVelocity":true
         }
     ],
     "PlayerPosition":

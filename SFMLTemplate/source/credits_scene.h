@@ -13,4 +13,8 @@ protected:
 private:
 	sf::Font m_RobotoFont;
 	sf::Music m_CreditsMusic;
+	//functions
+	void CreateBackground();
+	void CreateCreditsContent();
+	void CreateButton();
 };

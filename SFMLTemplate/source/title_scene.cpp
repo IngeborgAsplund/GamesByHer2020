@@ -23,40 +23,10 @@ void TitleScene::onInitializeScene()
 	m_titleMusic.openFromFile(kTitleMusic);
 	m_titleMusic.setVolume(25);
 	
-	std::shared_ptr<gbh::SpriteNode> spriteNode = std::make_shared<gbh::SpriteNode>(kTitleScreenBackground);
-	spriteNode->setName("Background");
-	spriteNode->setPosition(640, 300);
-	spriteNode->setOrigin(0.5f, 0.5f);
-	addChild(spriteNode);
-
-	std::shared_ptr<gbh::SpriteNode> rotatingAsteroid = std::make_shared<gbh::SpriteNode>(krotatingAsteroid);
-	rotatingAsteroid->setName("TitleScreenDeco");
-	rotatingAsteroid->setPosition(150, 100);
-	rotatingAsteroid->setOrigin(0.5f, 0.5f);
-	addChild(rotatingAsteroid);
-
-	std::shared_ptr<gbh::SpriteNode> title = std::make_shared<gbh::SpriteNode>(kTitleImage);
-    title->setOrigin(0.5f, 0.5f);
-	title->setPosition(640, 100);
-	title->setName("Title");
-	addChild(title);
-
-	std::shared_ptr<gbh::SpriteNode> ship = std::make_shared<gbh::SpriteNode>(kPlayerShip);
-	ship->setPosition(620, 300);
-	addChild(ship);
-
-	std::shared_ptr<gbh::SpriteNode> startButton = std::make_shared<gbh::SpriteNode>(kStartButton);
-	startButton->setPosition(640, 560);
-    startButton->setOrigin(0.5f, 0.5f);
-	startButton->setName("StartButton");
-	addChild(startButton);
-
-	std::shared_ptr<gbh::SpriteNode>creditsButton = std::make_shared<gbh::SpriteNode>(kCreditsButton);
-	creditsButton->setPosition(640, 460);
-	creditsButton->setOrigin(0.5f, 0.5f);
-	creditsButton->setName("Credits");
-	addChild(creditsButton);
-	
+	CreateBackground();
+	CreateAsteroid();
+	CreatePlayerShip();
+	CreateUI();
 }
 
 
@@ -93,15 +63,53 @@ void TitleScene::onMouseEvent(sf::Event& event)
 		
 	}
 }
-
-
 void TitleScene::onShowScene()
 {
 	m_titleMusic.play();
 }
-
-
 void TitleScene::onHideScene()
 {
 	m_titleMusic.stop();
+}
+void TitleScene::CreateBackground()
+{
+	std::shared_ptr<gbh::SpriteNode> spriteNode = std::make_shared<gbh::SpriteNode>(kTitleScreenBackground);
+	spriteNode->setName("Background");
+	spriteNode->setPosition(640, 300);
+	spriteNode->setOrigin(0.5f, 0.5f);
+	addChild(spriteNode);
+}
+void TitleScene::CreateAsteroid()
+{
+	std::shared_ptr<gbh::SpriteNode> rotatingAsteroid = std::make_shared<gbh::SpriteNode>(krotatingAsteroid);
+	rotatingAsteroid->setName("TitleScreenDeco");
+	rotatingAsteroid->setPosition(150, 100);
+	rotatingAsteroid->setOrigin(0.5f, 0.5f);
+	addChild(rotatingAsteroid);
+}
+void TitleScene::CreatePlayerShip()
+{
+	std::shared_ptr<gbh::SpriteNode> ship = std::make_shared<gbh::SpriteNode>(kPlayerShip);
+	ship->setPosition(620, 300);
+	addChild(ship);
+}
+void TitleScene::CreateUI()
+{
+	std::shared_ptr<gbh::SpriteNode> title = std::make_shared<gbh::SpriteNode>(kTitleImage);
+	title->setOrigin(0.5f, 0.5f);
+	title->setPosition(640, 100);
+	title->setName("Title");
+	addChild(title);
+
+	std::shared_ptr<gbh::SpriteNode> startButton = std::make_shared<gbh::SpriteNode>(kStartButton);
+	startButton->setPosition(640, 560);
+	startButton->setOrigin(0.5f, 0.5f);
+	startButton->setName("StartButton");
+	addChild(startButton);
+
+	std::shared_ptr<gbh::SpriteNode>creditsButton = std::make_shared<gbh::SpriteNode>(kCreditsButton);
+	creditsButton->setPosition(640, 460);
+	creditsButton->setOrigin(0.5f, 0.5f);
+	creditsButton->setName("Credits");
+	addChild(creditsButton);
 }

@@ -3,8 +3,11 @@
 #include "gamestate.h"
 #include"maingamescene.h"
 //include of standard c++ libraries
+#include<ctime>
 #include<fstream>
 #include<iostream>
+#include<random>
+
 //engine specific includes.
 #include"sfml-engine/game.h"
 #include"sfml-engine/shapenode.h"
@@ -127,28 +130,22 @@ void MainGameScene::captureInput()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))		
 	{
-		m_player->getPhysicsBody()->setLinearDamping(3.0);
-		m_player->getPhysicsBody()->applyForceToCenter(m_player->forwardVector()*accelration);
-		/*moveForce.y  -= 1.0;*/
+		m_player->getPhysicsBody()->setLinearDamping(2.0);
+		m_player->getPhysicsBody()->applyForceToCenter(m_player->forwardVector()*accelration);		
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{		
-		/*moveForce.y += 1.0;*/
 		m_player->getPhysicsBody()->setLinearDamping(m_player->getPhysicsBody()->getLinearDamping() + 0.1);
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{		
-		m_player->rotate(-1);
-		/*moveForce.x -= 1.0;*/		
+		m_player->rotate(-1);	
 
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{		
 		m_player->rotate(1);	
-		/*moveForce.x += 1.0;*/
 	}
-	/*moveForce = gbh::math::normalize(moveForce);
-	player->getPhysicsBody()->applyForceToCenter(moveForce*accelration);*/
 	
 }
 //This function takes each obstavle from the list of obstacles and rotate them by a rather low rotation amount this makes for
@@ -189,9 +186,21 @@ void MainGameScene::LoadLevel(const std::string& fileName)
 	{
 		std::cout << "Failed to load level from file " << fileName << ":" << except.what() << "\n";
 	}
-	//define what is found in json object
-	//boundary
-	nlohmann::json jsWorldBoundary = jsonFile["WorldBoundaries"];
+	//Loading functions for the levels, boundaries, backgrounds, checkpoints, asteroids and more are all loaded in via the below functions
+	LoadBoundaries(jsonFile);
+	LoadBackground(jsonFile);
+	LoadMusic(jsonFile);
+	LoadCeckpoints(jsonFile);
+	LoadActors(jsonFile);
+	LoadPlayer(jsonFile);
+	LoadCamera(jsonFile);
+	
+}
+
+//loading functions needed by load level
+void MainGameScene::LoadBoundaries(nlohmann::json& inJSon)
+{
+	nlohmann::json jsWorldBoundary = inJSon["WorldBoundaries"];
 	float xSize = jsWorldBoundary["sizeX"].get<float>();
 	float ySize = jsWorldBoundary["sizeY"].get<float>();
 	float xPos = jsWorldBoundary["PlaceMentX"].get<float>();
@@ -199,54 +208,60 @@ void MainGameScene::LoadLevel(const std::string& fileName)
 
 	std::shared_ptr<gbh::Node> m_boudnaries = std::make_shared<gbh::Node>();//node that will hold the boundaries for the world
 	m_boudnaries->setName("boundaries");
-	m_boudnaries->setPhysicsBody(getPhysicsWorld()->createEdgeBox(sf::Vector2(xSize,ySize)));
+	m_boudnaries->setPhysicsBody(getPhysicsWorld()->createEdgeBox(sf::Vector2(xSize, ySize)));
 	m_boudnaries->getPhysicsBody()->setType(gbh::PhysicsBodyType::Static);
-	m_boudnaries->setPosition(xPos,yPos);
+	m_boudnaries->setPosition(xPos, yPos);
 	addChild(m_boudnaries);
-	//bg image
-	nlohmann::json jsBackground = jsonFile["BackgroundImage"];
+}
+void MainGameScene::LoadBackground(nlohmann::json& inJSon)
+{
+	nlohmann::json jsBackground = inJSon["BackgroundImage"];
 
-	if(jsBackground!=NULL)
+	if (jsBackground != NULL)
 	{
-	const std::string backgroundImage = jsBackground["imagefile"].get<std::string>();
-	float bgPosX = jsBackground["posX"].get<float>();
-	float bgPosY = jsBackground["posY"].get<float>();
-	std::shared_ptr<gbh::SpriteNode> m_background = std::make_shared<gbh::SpriteNode>(backgroundImage);
-	m_background->setName("Background");
-	m_background->setOrigin(0.5f, 0.5f);
-	m_background->setPosition(bgPosX, bgPosY);
-	addChild(m_background);
+		const std::string backgroundImage = jsBackground["imagefile"].get<std::string>();
+		float bgPosX = jsBackground["posX"].get<float>();
+		float bgPosY = jsBackground["posY"].get<float>();
+		std::shared_ptr<gbh::SpriteNode> m_background = std::make_shared<gbh::SpriteNode>(backgroundImage);
+		m_background->setName("Background");
+		m_background->setOrigin(0.5f, 0.5f);
+		m_background->setPosition(bgPosX, bgPosY);
+		addChild(m_background);
 	}
-	else if(jsBackground==NULL)
-	{		
+	else if (jsBackground == NULL)
+	{
 		std::shared_ptr<gbh::SpriteNode> m_background = std::make_shared<gbh::SpriteNode>(kBackGround);
 		m_background->setName("Background");
 		m_background->setOrigin(0.5f, 0.5f);
-		m_background->setPosition(260,-200);
+		m_background->setPosition(260, -200);
 		addChild(m_background);
 	}
-	//music loading
-	nlohmann::json jsMusic = jsonFile["Music"];
+}
+void MainGameScene::LoadMusic(nlohmann::json& inJSon)
+{
+	nlohmann::json jsMusic = inJSon["Music"];
 
-	if(jsMusic!=NULL)
+	if (jsMusic != NULL)
 	{
 		const std::string music = jsMusic["path"].get< const std::string>();
 		m_mainMusic.openFromFile(music);
 	}
-	else if(jsMusic==NULL)
+	else if (jsMusic == NULL)
 	{
 		m_mainMusic.openFromFile(kMainMusic);
 	}
-
-	nlohmann::json jsonCheckpoints = jsonFile["checkpoints"];
-	if(!jsonCheckpoints.is_array())
+}
+void MainGameScene::LoadCeckpoints(nlohmann::json& inJSon)
+{
+	nlohmann::json jsonCheckpoints = inJSon["checkpoints"];
+	if (!jsonCheckpoints.is_array())
 	{
 		std::cout << "Level file either does not include a 'checkpoint' entry of it is not an array";
 		return;
 	}
-	if(jsonCheckpoints.is_array())
+	if (jsonCheckpoints.is_array())
 	{
-		for(int i =0; i<jsonCheckpoints.size();i++)
+		for (int i = 0; i < jsonCheckpoints.size(); i++)
 		{
 			float x = jsonCheckpoints[i]["x"].get<float>();
 			float y = jsonCheckpoints[i]["y"].get<float>();
@@ -257,23 +272,27 @@ void MainGameScene::LoadLevel(const std::string& fileName)
 			checkpoints.push_back(point);
 		}
 	}
-	nlohmann::json objects = jsonFile["Objects"];
-	nlohmann::json jsActors = jsonFile["Actors"];
+}
+void MainGameScene::LoadActors(nlohmann::json& inJSon)
+{
+	nlohmann::json objects = inJSon["Objects"];
+	nlohmann::json jsActors = inJSon["Actors"];
 	gbh::PhysicsMaterial asteroidMat;//create a physics material for the asteroids
-	if(objects.is_object()&&jsActors.is_array())
+	if (objects.is_object() && jsActors.is_array())
 	{
-		for(int i = 0; i<jsActors.size();i++)
+		for (int i = 0; i < jsActors.size(); i++)
 		{
 			nlohmann::json asteroid = jsActors[i];
 			nlohmann::json object = objects[asteroid["object"].get<std::string>()];
 
-			if(object.is_object())
+			if (object.is_object())
 			{
 				std::string imagepath = object["image"].get<std::string>();
 				std::string type = object["Body"]["type"].get<std::string>();
 				float size = object["Body"]["radius"].get<float>();
 				float xpos = jsActors[i]["x"].get<float>();
 				float ypos = jsActors[i]["y"].get<float>();
+				bool randomVelocity = jsActors[i]["randomVelocity"].get<bool>();
 
 				std::shared_ptr<Asteroid> ast = std::make_shared<Asteroid>(imagepath);
 				if (type == "Big")
@@ -290,17 +309,26 @@ void MainGameScene::LoadLevel(const std::string& fileName)
 				}
 				ast->setPhysicsBody(getPhysicsWorld()->createCircle(size, asteroidMat));
 				ast->SetUpAsteroid(sf::Vector2f(xpos, ypos));
+				if(randomVelocity)
+				{
+					std::mt19937 randomSeed = std::mt19937(std::time(nullptr));
+					std::uniform_int_distribution<int> velocity(-50,50);
+					ast->getPhysicsBody()->setLinearVelocity(sf::Vector2f((float)velocity(randomSeed), (float)velocity(randomSeed)));
+				}
 				addChild(ast);
 				rotatingObstacles.push_back(ast);
 			}
 
-			
+
 		}
 	}
-	nlohmann::json startPosition = jsonFile["PlayerPosition"];
+}
+void MainGameScene::LoadPlayer(nlohmann::json& inJSon)
+{
+	nlohmann::json startPosition = inJSon["PlayerPosition"];
 	float plX = startPosition["playerX"].get<float>();
 	float plY = startPosition["playerY"].get<float>();
-	
+
 	m_player = std::make_shared<gbh::SpriteNode>(KPlayerShip);
 	m_player->setName("Player");
 	m_player->setOrigin(0.5, 0.5);
@@ -308,14 +336,21 @@ void MainGameScene::LoadLevel(const std::string& fileName)
 	m_player->setScale(0.5, -0.5);
 	m_player->rotate(180);
 	//Physics for player ship added
-	sf::Vector2f shipsize = sf::Vector2f(55.0f, 102.0f);
-	m_player->setPhysicsBody(getPhysicsWorld()->createBox(shipsize * 0.5f));
+	sf::Vector2f shipmainBody = sf::Vector2f(20.0f, 110.0f);
+	sf::Vector2f shipSecondaryBody = sf::Vector2f(60, 15);
+	gbh::PhysicsMaterial shipMaterial;
+	shipMaterial.density = 3.0f;
+	m_player->setPhysicsBody(getPhysicsWorld()->createEmptyBody());
+	m_player->getPhysicsBody()->addBox(shipmainBody * 0.5f, sf::Vector2f(), shipMaterial);
+	m_player->getPhysicsBody()->addBox(shipSecondaryBody * 0.5f, sf::Vector2f(0.0f, -5.0f), shipMaterial);
 	m_player->getPhysicsBody()->setType(gbh::PhysicsBodyType::Dynamic);
-	m_player->getPhysicsBody()->setLinearDamping(3.0f);
+	m_player->getPhysicsBody()->setLinearDamping(2.0f);
 	m_player->getPhysicsBody()->setFixedRotation(true);
 	addChild(m_player);
-
-	nlohmann::json cameraVariable = jsonFile["CameraVariable"];
+}
+void MainGameScene::LoadCamera(nlohmann::json& inJSon)
+{
+	nlohmann::json cameraVariable = inJSon["CameraVariable"];
 	float camerastartX = cameraVariable["cameraX"].get<float>();
 	float cameraStartY = cameraVariable["cameraY"].get<float>();
 	float trackingX = cameraVariable["trackingX"].get<float>();
@@ -328,9 +363,8 @@ void MainGameScene::LoadLevel(const std::string& fileName)
 	setCamera(m_MainCamera);
 	m_MainCamera->SetTrackingArea(trackingX, trackingY);
 	m_MainCamera->SetSpeed(2);
-
-	
 }
+
 void MainGameScene::UpdateMyTimer(double deltaTime)
 {
 	if(!m_courseFinished)
@@ -382,3 +416,5 @@ void MainGameScene::EndGame()
 		}
 	}
 }
+
+
