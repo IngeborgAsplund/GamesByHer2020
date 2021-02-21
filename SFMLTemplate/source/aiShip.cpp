@@ -30,7 +30,5 @@ void AiControlledShip::MoveTowerds()
 	float xDirection = currentCheckpoint->getPosition().x-this->getPosition().x;
 	float yDirection = currentCheckpoint->getPosition().y - this->getPosition().y;
 	direction = gbh::math::normalize(sf::Vector2f(xDirection, yDirection));	
-	getPhysicsBody()->applyForceToCenter(direction * speed);
-	
-	
+	getPhysicsBody()->applyForceToCenter(direction * speed);	
 }
