@@ -68,11 +68,30 @@ void CreditsScene::CreateCreditsContent()
 	creditsContent01->setName("myCredit");
 	addChild(creditsContent01);
 
-	std::shared_ptr<gbh::TextNode> creditsContent02 = std::make_shared<gbh::TextNode>("Powered by SFML code library by Mircrosoft", m_RobotoFont, 30);
-	creditsContent02->setPosition(640, 250);
+	std::shared_ptr<gbh::TextNode> creditsContent02 = std::make_shared<gbh::TextNode>("External Resources", m_RobotoFont, 30);
+	creditsContent02->setPosition(640, 290);
 	creditsContent02->setOrigin(0.5f, 0.5f);
-	creditsContent02->setName("sfml reference");
+	creditsContent02->setName("External resources");
 	addChild(creditsContent02);
+	
+	std::shared_ptr<gbh::TextNode>creditscontent03 = std::make_shared<gbh::TextNode>("SFML engine code library by Microsoft",m_RobotoFont,25);
+	creditscontent03->setPosition(640, 340);
+	creditscontent03->setOrigin(0.5f, 0.5f);
+	creditscontent03->setName("sfml ref");
+	addChild(creditscontent03);
+
+	std::shared_ptr<gbh::TextNode>creditscontent04 = std::make_shared<gbh::TextNode>("Box 2D physics engine by Erin Catto", m_RobotoFont, 25);
+	creditscontent04->setPosition(640, 390);
+	creditscontent04->setOrigin(0.5f, 0.5f);
+	creditscontent04->setName("Box 2d");
+	addChild(creditscontent04);
+
+	std::shared_ptr<gbh::TextNode>creditscontent05 = std::make_shared<gbh::TextNode>("Nlohman Json by Niels Lohman", m_RobotoFont, 25);
+	creditscontent05->setPosition(640, 440);
+	creditscontent05->setOrigin(0.5f, 0.5f);
+	creditscontent05->setName("NLohman Json");
+	addChild(creditscontent05);
+
 }
 void CreditsScene::CreateButton()
 {
