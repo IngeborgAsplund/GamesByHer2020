@@ -14,8 +14,7 @@ void AiControlledShip::AssignListOfCheckpoints(std::vector<std::shared_ptr<Check
 {
 	checkpointsInScene = inCheckpoint;
 	checkIndex = 0;
-	currentCheckpoint = checkpointsInScene[checkIndex];
-	reached = false;
+	currentCheckpoint = checkpointsInScene[checkIndex];	
 }
 
 void AiControlledShip::FindNewCeckPoint()
@@ -23,8 +22,7 @@ void AiControlledShip::FindNewCeckPoint()
 	if(checkIndex>-1&&checkIndex< checkpointsInScene.size()-1)
 	{
 		checkIndex++;
-		currentCheckpoint = checkpointsInScene[checkIndex];
-		reached = false;
+		currentCheckpoint = checkpointsInScene[checkIndex];		
 	}
 }
 void AiControlledShip::MoveTowerds()
@@ -32,7 +30,7 @@ void AiControlledShip::MoveTowerds()
 	float xDirection = currentCheckpoint->getPosition().x-this->getPosition().x;
 	float yDirection = currentCheckpoint->getPosition().y - this->getPosition().y;
 	direction = gbh::math::normalize(sf::Vector2f(xDirection, yDirection));	
-    getPhysicsBody()->applyForceToCenter(direction*speed);
+	getPhysicsBody()->applyForceToCenter(direction * speed);
 	
 	
 }

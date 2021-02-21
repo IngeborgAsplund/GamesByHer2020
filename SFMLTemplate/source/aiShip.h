@@ -15,11 +15,10 @@ public:
 private:
 	//variables
 	std::shared_ptr<CheckPoint> currentCheckpoint;
-	sf::Vector2f direction;
+	sf::Vector2f direction;	
     float speed = 1500.0f;//speed we use as force for the enemy ship/agent
+	float reachingDistance = 2;
 	int checkIndex = -1;
-	bool reached = false;
 	std::vector<std::shared_ptr<CheckPoint>> checkpointsInScene;
-	//functions
 	
 };

@@ -44,7 +44,6 @@ void MainGameScene::onInitializeScene()
 void MainGameScene:: onUpdate(double deltaTime)
 {	
 	captureInput();
-	RotateObstacles();
 	UpdateMyTimer(deltaTime);
 	if(m_competetitor!=nullptr)
 	{
@@ -97,12 +96,13 @@ void MainGameScene::onBeginPhysicsContact(const gbh::PhysicsContact& contact)
 	}
 	else if(contact.containsNode(competitor))
 	{
-		gbh::Node* otherNode = contact.otherNode(competitor);
-		if(otherNode->getName()== "checkPoint")
-		{			
+		gbh::Node* othernode = contact.otherNode(competitor);
+		if(othernode->getName()== "checkPoint")
+		{
 			m_competetitor->FindNewCeckPoint();
 		}
 	}
+	
 }
 //Here we advance what checkpoint we want to show
 void MainGameScene::AdvanceCheckpoints()
@@ -166,15 +166,6 @@ void MainGameScene::captureInput()
 		m_player->rotate(1);	
 	}
 	
-}
-//This function takes each obstavle from the list of obstacles and rotate them by a rather low rotation amount this makes for
-// rotating obstacles in the gameword
-void MainGameScene::RotateObstacles()
-{
-	for(int i = 0; i< rotatingObstacles.size(); i++)
-	{
-		rotatingObstacles[i]->rotate(0.54f);
-	}
 }
 // This functions toggles the debugdraw function active or inactive dependent on the state of a bool(getDrawPhysicsDebug) and will be triggered when the player
 //press the U key.
@@ -329,14 +320,14 @@ void MainGameScene::LoadActors(nlohmann::json& inJSon)
 				}
 				ast->setPhysicsBody(getPhysicsWorld()->createCircle(size, asteroidMat));
 				ast->SetUpAsteroid(sf::Vector2f(xpos, ypos));
+				std::mt19937 randomSeed = std::mt19937(std::time(nullptr));
+				std::uniform_int_distribution<int> velocity(-50,50);
 				if(randomVelocity)
 				{
-					std::mt19937 randomSeed = std::mt19937(std::time(nullptr));
-					std::uniform_int_distribution<int> velocity(-50,50);
 					ast->getPhysicsBody()->setLinearVelocity(sf::Vector2f((float)velocity(randomSeed), (float)velocity(randomSeed)));
 				}
-				addChild(ast);
-				rotatingObstacles.push_back(ast);
+				ast->getPhysicsBody()->setAngularVelocity((float)velocity(randomSeed));
+				addChild(ast);	
 			}
 
 
@@ -382,7 +373,7 @@ void MainGameScene::LoadEnemySip(nlohmann::json& inJSon)
 		m_competetitor->setScale(0.5, 0.5);
 
 		gbh::PhysicsMaterial compMat;
-		sf::Vector2f size = sf::Vector2f(40, 100);
+		sf::Vector2f size = sf::Vector2f(60, 140);
 		compMat.density = 3;
 		m_competetitor->setPhysicsBody(getPhysicsWorld()->createEmptyBody());
 		m_competetitor->getPhysicsBody()->addBox(size * 0.5f, sf::Vector2f(), compMat);

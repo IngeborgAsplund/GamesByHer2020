@@ -24,7 +24,6 @@ private:
 	//physics related variables
 	float accelration = 2000.0f;
 	sf::Vector2f moveForce = sf::Vector2f(0.0f, 0.0f);	
-	std::vector<std::shared_ptr<gbh::Node>> rotatingObstacles;
 	std::shared_ptr<FollowCameraNode> m_MainCamera;
 	std::shared_ptr<gbh::SpriteNode> m_player;
 	std::shared_ptr<AiControlledShip> m_competetitor;
@@ -37,7 +36,6 @@ private:
 	bool m_courseFinished = false;
 	//functions
 	void captureInput();
-	void RotateObstacles();
 	void ToggleDebugDraw();
 	void LoadLevel(const std::string& fileName);
 	void AdvanceCheckpoints();
